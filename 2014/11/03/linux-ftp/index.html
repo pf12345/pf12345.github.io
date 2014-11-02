@@ -7,12 +7,24 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>Hello World | payne blog</title>
+    <title>linux_ftp | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in ">
+    <meta name="description" content="Linux进行ftp设置
+1.更新yum源
+
+#yum update
+
+###2.安装vsftp
+使用yum命令安装vsftp
+
+#yum install vsftpd -y
+
+
+3.添加ftp帐号和目录
+先检查一下nologin的位置，通常在/usr/sbin/nologin或者/sbin/nol">
     
     
     
@@ -57,6 +69,8 @@
 					
 						<li><a href="/archives">归档</a></li>
 					
+						<li><a href="/about">关于</a></li>
+					
 					<li>
 					
                                             <form class="search" action=http://search.baidu.com/cse/search target="_blank">
@@ -75,15 +89,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/11/02/hello-world/" title="Hello World" itemprop="url">Hello World</a>
+      <a href="/2014/11/03/linux-ftp/" title="linux_ftp" itemprop="url">linux_ftp</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-11-02T11:37:36.000Z" itemprop="datePublished">11月 2 2014</time>
-    更新日期:<time datetime="2014-11-02T11:37:36.000Z" itemprop="dateModified">11月 2 2014</time>
+    <time datetime="2014-11-02T16:26:11.000Z" itemprop="datePublished">11月 3 2014</time>
+    更新日期:<time datetime="2014-11-02T16:33:50.000Z" itemprop="dateModified">11月 3 2014</time>
     
   </p>
 </header>
@@ -92,37 +106,78 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick_Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create_a_new_post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run_server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate_static_files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy_to_remote_sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux进行ftp设置"><span class="toc-number">1.</span> <span class="toc-text">Linux进行ftp设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-更新yum源"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.更新yum源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-添加ftp帐号和目录"><span class="toc-number">1.0.2.</span> <span class="toc-text">3.添加ftp帐号和目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-配置vsftp"><span class="toc-number">1.0.3.</span> <span class="toc-text">4.配置vsftp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-修改shell配置"><span class="toc-number">1.0.4.</span> <span class="toc-text">5.修改shell配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-启动vsftp服务并测试登录"><span class="toc-number">1.0.5.</span> <span class="toc-text">6.启动vsftp服务并测试登录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#service_vsftpd_start"><span class="toc-number">2.</span> <span class="toc-text">service vsftpd start</span></a></li></ol>
 		</div>
 		
-		<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">trobuleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick_Start">Quick Start</h2>
-<h3 id="Create_a_new_post">Create a new post</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+		<h1 id="Linux进行ftp设置">Linux进行ftp设置</h1>
+<h3 id="1-更新yum源">1.更新yum源</h3>
+<pre>
+#yum update
+</pre>
+###2.安装vsftp
+使用yum命令安装vsftp
+<pre>
+#yum install vsftpd -y
+</pre>
 
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server">Run server</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<h3 id="3-添加ftp帐号和目录">3.添加ftp帐号和目录</h3>
+<p>先检查一下nologin的位置，通常在/usr/sbin/nologin或者/sbin/nologin下。<br>使用下面的命令创建帐户，该命令指定了/alidata/www为用户pwftp的家目录，您可以自己定义帐户名和目录：</p>
+<pre>
+#useradd -d /alidata/www -s /sbin/nologin pwftp
+其中，pwftp即为登录用户名
+</pre>
 
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>修改该帐户密码:</p>
+<pre>
+#passwd pwftp
+其中，pwftp即为登录密码
+</pre>
 
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>修改指定目录的权限</p>
+<pre>
+#chown -R pwftp.pwftp /alidata/www
+</pre>
 
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+<h3 id="4-配置vsftp">4.配置vsftp</h3>
+<p>编辑vsftp配置文件，命令如下：</p>
+<pre>
+#vim /etc/vsftpd/vsftpd.conf
+
+将配置文件中”anonymous_enable=YES “改为 “anonymous_enable=NO”
+取消如下配置前的注释符号：
+local_enable=YES
+write_enable=YES
+chroot_local_user=YES
+保存修改，按ESC键，输入：wq
+</pre>
+
+<h3 id="5-修改shell配置">5.修改shell配置</h3>
+<p>vi编辑/etc/shells，如果该文件里没有/usr/sbin/nologin或者/sbin/nologin（具体看当前系统配置）则追加进去</p>
+<h3 id="6-启动vsftp服务并测试登录">6.启动vsftp服务并测试登录</h3>
+<p>使用命令启动vsftp服务：</p>
+<p><pre></pre></p>
+<h1 id="service_vsftpd_start">service vsftpd start</h1>
+<p><br>然后用帐号pwftp测试下是否可以登陆ftp。目录是/alidata/www。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/linux/">Linux</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/linux/">Linux</a>
+</div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/11/02/hello-world/" data-title="Hello World | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2014/11/03/linux-ftp/" data-title="linux_ftp | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -131,14 +186,14 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/11/02/my-new-post/" title="my new post">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  my new post</span>
+
+<div class="next">
+<a href="/2014/11/03/Hexo/"  title="Hexo的使用">
+ <strong>NEXT:</strong><br/> 
+ <span>Hexo的使用
+</span>
 </a>
 </div>
-
 
 </nav>
 
@@ -152,7 +207,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick_Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create_a_new_post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run_server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate_static_files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy_to_remote_sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux进行ftp设置"><span class="toc-number">1.</span> <span class="toc-text">Linux进行ftp设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-更新yum源"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.更新yum源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-添加ftp帐号和目录"><span class="toc-number">1.0.2.</span> <span class="toc-text">3.添加ftp帐号和目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-配置vsftp"><span class="toc-number">1.0.3.</span> <span class="toc-text">4.配置vsftp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-修改shell配置"><span class="toc-number">1.0.4.</span> <span class="toc-text">5.修改shell配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-启动vsftp服务并测试登录"><span class="toc-number">1.0.5.</span> <span class="toc-text">6.启动vsftp服务并测试登录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#service_vsftpd_start"><span class="toc-number">2.</span> <span class="toc-text">service vsftpd start</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -164,7 +219,11 @@
 	
 	<div class="social-list" class="clearfix">
 		
+		<a href="http://weibo.com/2926579772" target="_blank" title="weibo"></a>
 		
+		
+		
+		<a href="https://github.com/pf12345" target="_blank" title="github"></a>
 		
 		
 		
@@ -172,8 +231,32 @@
 </div>
 
   
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/categories/other/" title="其他">其他<sup>1</sup></a></li>
+		
+			<li><a href="/categories/编程/" title="编程">编程<sup>0</sup></a></li>
+		
+		</ul>
+</div>
+
 
   
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/hexo/" title="Hexo">Hexo<sup>1</sup></a></li>
+		
+			<li><a href="/tags/linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
 
   <div class="linkslist">
   <p class="asidetitle">友情链接</p>
@@ -189,6 +272,13 @@
 </div>
 
   
+  <div class="tagcloudlist">
+    <p class="asidetitle">标签云</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/hexo/" style="font-size: NaNpx;">Hexo</a><a href="/tags/linux/" style="font-size: NaNpx;">Linux</a>
+    </div>
+  </div>
+
 
 </aside>
 </div>
