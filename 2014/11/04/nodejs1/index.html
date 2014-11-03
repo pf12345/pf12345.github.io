@@ -7,19 +7,19 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>Hexo的使用 | payne blog</title>
+    <title>nodejs、mongodb的windows下安装 | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="Hexo 自己使用
-coney主题介绍： http://gengbiao.me/2014/10/13/coney主题介绍/    
-Hexo常用指令：
-常用命令：
+    <meta name="description" content="1、window下的nodejs安装比较容易，只要在nodejs官网主页下install按钮点击下载安装包：
 
-hexo new &quot;postName&quot; #新建文章
-hexo new page &quot;pageName&quot; #新建页面
-hexo gener">
+2、下载完成后，双击安装包，只要next进行window平常软件安装就可以安装完成。安装完成后，打开windows的cmd，在里面输入:
+node -v
+
+结果如下：
+
+如果有版本号信息，">
     
     
     
@@ -82,15 +82,15 @@ hexo gener">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/11/03/Hexo/" title="Hexo的使用" itemprop="url">Hexo的使用</a>
+      <a href="/2014/11/04/nodejs1/" title="nodejs、mongodb的windows下安装" itemprop="url">nodejs、mongodb的windows下安装</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-11-02T16:02:29.000Z" itemprop="datePublished">11月 3 2014</time>
-    更新日期:<time datetime="2014-11-02T16:13:03.000Z" itemprop="dateModified">11月 3 2014</time>
+    <time datetime="2014-11-03T16:02:10.000Z" itemprop="datePublished">11月 4 2014</time>
+    更新日期:<time datetime="2014-11-03T17:04:46.000Z" itemprop="dateModified">11月 4 2014</time>
     
   </p>
 </header>
@@ -99,52 +99,55 @@ hexo gener">
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hexo_自己使用"><span class="toc-number">1.</span> <span class="toc-text">Hexo 自己使用</span></a></li></ol>
+		
 		</div>
 		
-		<h1 id="Hexo_自己使用">Hexo 自己使用</h1>
-<p>coney主题介绍： <a href="http://gengbiao.me/2014/10/13/coney%E4%B8%BB%E9%A2%98%E4%BB%8B%E7%BB%8D/" target="_blank" rel="external">http://gengbiao.me/2014/10/13/coney主题介绍/</a>    </p>
-<p>Hexo常用指令：</p>
-<p>常用命令：</p>
-<pre>
-hexo new "postName" #新建文章<br>
-hexo new page "pageName" #新建页面<br>
-hexo generate #生成静态页面至public目录<br>
-hexo server #开启预览访问端口（默认端口4000，'ctrl + c'关闭server）<br>
-hexo deploy #将.deploy目录部署到GitHub
-</pre>
+		<p>1、window下的nodejs安装比较容易，只要在<a href="http://www.nodejs.org/" target="_blank" rel="external">nodejs官网主页</a>下install按钮点击下载安装包：</p>
+<p><img src="/img/nodejsIndex.png"></p>
+<p>2、下载完成后，双击安装包，只要next进行window平常软件安装就可以安装完成。安装完成后，打开windows的cmd，在里面输入:</p>
+<pre>node -v</pre>
 
-<p>常用复合命令：</p>
-<pre>
-hexo deploy -g<br>
-hexo server -g
-</pre>
-简写：
-<pre>
-hexo n == hexo new<br>
-hexo g == hexo generate<br>
-hexo s == hexo server<br>
-hexo d == hexo deploy
-</pre>  
+<p>结果如下：</p>
+<p><img src="/img/nodejsCmd.png"></p>
+<p>如果有版本号信息，则安装完成，安装完成后，里面有自带的npm，也可使用：</p>
+<pre>npm -v</pre>
+
+<p>同上查看是否安装完成.</p>
+<p>3、在使用npm时，需要了解是否安装全局</p>
+<p>当使用npm install module -g后，所安装的模块将在任何地方都可使用，但是如果没有使用-g的模块，只能在当前项目使用此模块，在其他项目，就必须重新安装此模块，在以后使用中，将会举例讲解，也能够更好的理解。</p>
+<p>4、mongodb的安装时，首先访问<a href="http://www.mongodb.org/downloads" target="_blank" rel="external">mongodb官网下载页</a>,再选择自己的需要的版本，如下图：</p>
+<p><img src="/img/mongodbDownload.png"></p>
+<p>下载后是一个zip包，找个合适地方解压后，就可以直接使用。</p>
+<p>在解压的文件夹新建data文件夹，如图：</p>
+<p><img src="/img/mongodbData.png"></p>
+<p>当每次使用时，在你mongodb解压的位置，打开bin文件夹，可以看见如下：</p>
+<p><img src="/img/mongodbDir.png"></p>
+<p>在文件夹，按住shift，点击鼠标右键，点击“在此处打开命令窗口”，打开cmd，也可直接打开cmd，在进入此文件夹，然后输入 mongd.exe -dbpath e:\mongodb\data,其中e:\mongodb是我放mongodb的文件夹，你输入你放mongodb的位置就行，如下：</p>
+<p><img src="/img/mongodbQd.png"></p>
+<p>如果看到“connections on port 28017”,则表示已经启动；</p>
+<p>如果需要输入mongodb相关命令，则，在cmd，进入上面“bin”文件夹，输入mongo后，即可开始，但是不能关闭上面cmd窗口，及mongodb 服务，如下：</p>
+<p><img src="/img/mongo.png"></p>
+<p>需要注意的是，在启动mongo的时候，mongod需要启动，及上面打开的cmd不能关闭，而应该重新打开cmd启动mongo，这样就可以开始使用mongodb。</p>
+  
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/hexo/">Hexo</a>
+  <span></span> <a href="/tags/nodejs/">nodejs</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/other/">其他</a>
+  <a class="article-category-link" href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/">使用nodejs、mongodb、express、linux搭建社区网站</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/11/03/Hexo/" data-title="Hexo的使用 | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2014/11/04/nodejs1/" data-title="nodejs、mongodb的windows下安装 | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -153,14 +156,14 @@ hexo d == hexo deploy
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/11/03/linux-ftp/" title="linux_ftp">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  linux_ftp</span>
+
+<div class="next">
+<a href="/2014/11/03/nml1/"  title="使用nodejs、mongodb、express、linux搭建社区网站(前言)">
+ <strong>NEXT:</strong><br/> 
+ <span>使用nodejs、mongodb、express、linux搭建社区网站(前言)
+</span>
 </a>
 </div>
-
 
 </nav>
 
@@ -174,7 +177,7 @@ hexo d == hexo deploy
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hexo_自己使用"><span class="toc-number">1.</span> <span class="toc-text">Hexo 自己使用</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">

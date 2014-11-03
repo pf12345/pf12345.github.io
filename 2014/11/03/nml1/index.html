@@ -7,19 +7,13 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>Hexo的使用 | payne blog</title>
+    <title>使用nodejs、mongodb、express、linux搭建社区网站(前言) | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="Hexo 自己使用
-coney主题介绍： http://gengbiao.me/2014/10/13/coney主题介绍/    
-Hexo常用指令：
-常用命令：
-
-hexo new &quot;postName&quot; #新建文章
-hexo new page &quot;pageName&quot; #新建页面
-hexo gener">
+    <meta name="description" content="前言
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在公司，一直使用nodejs及mysql进行网站建设，但是对于前端工程师，尤其对于没有后台经验及后台语言使用经验的前端工程师，能够使用从前端，到后台，及整个网站都是js完成，那肯定是不错的方法，对于本人，也是刚">
     
     
     
@@ -82,15 +76,15 @@ hexo gener">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/11/03/Hexo/" title="Hexo的使用" itemprop="url">Hexo的使用</a>
+      <a href="/2014/11/03/nml1/" title="使用nodejs、mongodb、express、linux搭建社区网站(前言)" itemprop="url">使用nodejs、mongodb、express、linux搭建社区网站(前言)</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-11-02T16:02:29.000Z" itemprop="datePublished">11月 3 2014</time>
-    更新日期:<time datetime="2014-11-02T16:13:03.000Z" itemprop="dateModified">11月 3 2014</time>
+    <time datetime="2014-11-03T15:43:25.000Z" itemprop="datePublished">11月 3 2014</time>
+    更新日期:<time datetime="2014-11-03T16:08:18.000Z" itemprop="dateModified">11月 4 2014</time>
     
   </p>
 </header>
@@ -99,52 +93,33 @@ hexo gener">
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hexo_自己使用"><span class="toc-number">1.</span> <span class="toc-text">Hexo 自己使用</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li></ol>
 		</div>
 		
-		<h1 id="Hexo_自己使用">Hexo 自己使用</h1>
-<p>coney主题介绍： <a href="http://gengbiao.me/2014/10/13/coney%E4%B8%BB%E9%A2%98%E4%BB%8B%E7%BB%8D/" target="_blank" rel="external">http://gengbiao.me/2014/10/13/coney主题介绍/</a>    </p>
-<p>Hexo常用指令：</p>
-<p>常用命令：</p>
-<pre>
-hexo new "postName" #新建文章<br>
-hexo new page "pageName" #新建页面<br>
-hexo generate #生成静态页面至public目录<br>
-hexo server #开启预览访问端口（默认端口4000，'ctrl + c'关闭server）<br>
-hexo deploy #将.deploy目录部署到GitHub
-</pre>
-
-<p>常用复合命令：</p>
-<pre>
-hexo deploy -g<br>
-hexo server -g
-</pre>
-简写：
-<pre>
-hexo n == hexo new<br>
-hexo g == hexo generate<br>
-hexo s == hexo server<br>
-hexo d == hexo deploy
-</pre>  
+		<h2 id="前言">前言</h2>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在公司，一直使用nodejs及mysql进行网站建设，但是对于前端工程师，尤其对于没有后台经验及后台语言使用经验的前端工程师，能够使用从前端，到后台，及整个网站都是js完成，那肯定是不错的方法，对于本人，也是刚刚开始使用，一边使用一边学习，这些就是对于使用nodejs、express、mongodb创建网站的一些总结。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在这里面，都只是开发中的过程的一些过程，可能有很多错误，这里面只会有一些简单的过程介绍。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将先在window本地进行开发及运行，在开发完成后，将会有linux后台布置、邮件系统搭建及邮件发送及完整发布。最后完成整个网站的开发及发布。</p>
+  
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/hexo/">Hexo</a>
+  <span></span> <a href="/tags/nodejs/">nodejs</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/other/">其他</a>
+  <a class="article-category-link" href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/">使用nodejs、mongodb、express、linux搭建社区网站</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/11/03/Hexo/" data-title="Hexo的使用 | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2014/11/03/nml1/" data-title="使用nodejs、mongodb、express、linux搭建社区网站(前言) | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -154,13 +129,21 @@ hexo d == hexo deploy
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2014/11/03/linux-ftp/" title="linux_ftp">
+ <a href="/2014/11/04/nodejs1/" title="nodejs、mongodb的windows下安装">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  linux_ftp</span>
+  nodejs、mongodb的windows下安装</span>
 </a>
 </div>
 
+
+<div class="next">
+<a href="/2014/11/03/linux-ftp/"  title="linux_ftp">
+ <strong>NEXT:</strong><br/> 
+ <span>linux_ftp
+</span>
+</a>
+</div>
 
 </nav>
 
@@ -174,7 +157,7 @@ hexo d == hexo deploy
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Hexo_自己使用"><span class="toc-number">1.</span> <span class="toc-text">Hexo 自己使用</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li></ol>
   </div>
 
 <div id="asidepart">
