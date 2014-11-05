@@ -7,13 +7,17 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>使用nodejs、mongodb、express、linux搭建社区网站(前言) | payne blog</title>
+    <title>node项目创建及app.js生成 | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="前言
-&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;在公司，一直使用nodejs及mysql进行网站建设，但是对于前端工程师，尤其对于没有后台经验及后台语言使用经验的前端工程师，能够使用从前端，到后台，及整个网站都是js完成，那肯定是不错的方法，对于本人，也是刚">
+    <meta name="description" content="在这儿，使用的是express3的版本，我这儿用的是3.4.7版本，如果直接安装，目前是express4的版本，最后会导致某些错误，没有经过测试，所以，希望安装的时候，选择3的版本安装。可以在cmd中使用如下命令安装：
+
+npm install express@3.4.7 -save
+
+
+如果不知道">
     
     
     
@@ -76,15 +80,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/11/03/nml1/" title="使用nodejs、mongodb、express、linux搭建社区网站(前言)" itemprop="url">使用nodejs、mongodb、express、linux搭建社区网站(前言)</a>
+      <a href="/2014/11/05/node-app/" title="node项目创建及app.js生成" itemprop="url">node项目创建及app.js生成</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-11-03T15:43:25.000Z" itemprop="datePublished">11月 3 2014</time>
-    更新日期:<time datetime="2014-11-03T16:08:18.000Z" itemprop="dateModified">11月 4 2014</time>
+    <time datetime="2014-11-05T15:28:12.000Z" itemprop="datePublished">11月 5 2014</time>
+    更新日期:<time datetime="2014-11-05T16:55:09.000Z" itemprop="dateModified">11月 6 2014</time>
     
   </p>
 </header>
@@ -93,13 +97,156 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li></ol>
+		
 		</div>
 		
-		<h2 id="前言">前言</h2>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在公司，一直使用nodejs及mysql进行网站建设，但是对于前端工程师，尤其对于没有后台经验及后台语言使用经验的前端工程师，能够使用从前端，到后台，及整个网站都是js完成，那肯定是不错的方法，对于本人，也是刚刚开始使用，一边使用一边学习，这些就是对于使用nodejs、express、mongodb创建网站的一些总结。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在这里面，都只是开发中的过程的一些过程，可能有很多错误，这里面只会有一些简单的过程介绍。</p>
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;将先在window本地进行开发及运行，在开发完成后，将会有linux后台布置、邮件系统搭建及邮件发送及完整发布。最后完成整个网站的开发及发布。</p>
+		<p>在这儿，使用的是express3的版本，我这儿用的是3.4.7版本，如果直接安装，目前是express4的版本，最后会导致某些错误，没有经过测试，所以，希望安装的时候，选择3的版本安装。<br>可以在cmd中使用如下命令安装：</p>
+<pre>
+npm install express@3.4.7 -save
+</pre>
+
+<p>如果不知道怎么使用，也可在cmd中使用npm的help进行查看：<br>例如，需要查看npm install的参数，可以使用：</p>
+<pre>
+npm install help
+</pre>
+进行查看；
+
+下面，先开始布置网站的整体结构，如下：
+
+|--website<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--Bll  // 业务逻辑层<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--Dal  // Data Access Layer 数据访问层<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--controllers  // 控制层 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--Public  // 静态文件夹 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--css  // css文件夹<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--js  // js文件夹<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--image // 图片资源文件夹 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--Views  //页面文件夹 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--package.json <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--config.js  //配置文件<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--app.js //启动文件
+
+
+以上就是整个项目的结构图，可以根据此，建立项目结构及相应文件进行开发。
+
+首先，先进行app.js的开发，也就是先启动起来。
+1、先按照上面结构，建好项目，
+
+2、在之前，需要安装一些需要的模块；
+
+安装express：
+<pre>
+npm install express@3.4.7 --save
+</pre>
+
+<p>安装connect-mongo:</p>
+<pre>
+npm install connect-mongo --save
+</pre>
+
+<p>安装consolidate：</p>
+<pre>
+npm install consolidate --save
+</pre>
+
+<p>安装multi-process-session：</p>
+<pre>
+npm install multi-process-session --save
+</pre>
+
+<p>安装simple-mvc：</p>
+<pre>
+npm install simple-mvc --save
+</pre>
+3、添加配置文件config.js,主要配置端口号及数据库信息
+<pre>
+/**
+ * 端口配置
+ * @type {number}
+ */
+exports.port = 80;
+
+
+/**
+ *数据库信息
+ */
+exports.dbInfo = {
+    cookieSecret:'mysecret',
+    db: 'website',
+    host: 'localhost'
+};
+</pre>
+
+<p>4、开发app.js</p>
+<pre>
+<code>
+var express = require('express');
+var http = require('http');
+var path = require('path');
+var MongoStore = require('connect-mongo')(express);
+var config = require('./config');
+var cons = require('consolidate');
+
+var sessionStore = new MongoStore({
+    db:config.dbInfo.db
+}, function() {
+    console.log('connect mongodb success...');
+});
+
+var app = express();
+
+
+app.use(express.cookieParser('aa')); //cookie处理
+require("multi-process-session")(app, 'cookie');
+
+app.configure(function (){
+    app.set('views', path.join(__dirname, 'views'));
+    app.engine('.html', cons.swig);
+    app.set('views engine', 'html');
+    app.use(express.favicon());
+    app.use(express.logger('dev'));
+    app.use(express.json());
+    app.use(express.urlencoded());
+    app.use(express.methodOverride());
+    app.use(express.cookieParser('nothing'));
+    app.use(app.router);
+    app.use(express.static(path.join(__dirname, 'public')));
+});
+require('simple-mvc')(app);//配置mvc
+
+// development only
+if ('development' == app.get('env')) {
+    app.use(express.errorHandler());
+}
+
+http.createServer(app).listen(config.port, function(){
+    console.log('Server listening on port ' + config.port);
+});
+</code>
+</pre>
+
+<p>5、启动app.js<br>在启动之前，需要先下载一个redis，<a href="http://www.redis.io/download" target="_blank" rel="external">redis下载</a><br>下载后，解压，双击redis-server.exe启动即可；还得按照上一节的讲解启动mongodb的服务。</p>
+<p>在app.js的同一目录下，打开cmd使用以下命令启动：</p>
+<pre>
+node app.js
+</pre>
+
+<p>如果显示如下，说明启动成功：<br><img src="/img/qdsuccess.png"></p>
+<p>如果有以下错误：</p>
+<pre>
+Error:failed to connect to [127.0.0.1:27017]
+
+说明你没有启动mongodb服务，
+</pre>
+
+
+<pre>
+Error: Redis connection to 127.0.0.1:6379 failed - read ECONNRESET
+
+说明没有启动redis服务
+</pre>
+
+<p>暂时，先启动了nodejs，在下面，将会进行视图，及控制器的使用。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -119,7 +266,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/11/03/nml1/" data-title="使用nodejs、mongodb、express、linux搭建社区网站(前言) | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2014/11/05/node-app/" data-title="node项目创建及app.js生成 | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -128,19 +275,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/11/04/nodejs1/" title="nodejs、mongodb的windows下安装">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  nodejs、mongodb的windows下安装</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/11/03/linux-ftp/"  title="linux_ftp">
+<a href="/2014/11/04/nodejs1/"  title="nodejs、mongodb的windows下安装">
  <strong>NEXT:</strong><br/> 
- <span>linux_ftp
+ <span>nodejs、mongodb的windows下安装
 </span>
 </a>
 </div>
@@ -157,7 +296,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
