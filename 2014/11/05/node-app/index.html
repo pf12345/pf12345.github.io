@@ -14,10 +14,10 @@
     
     <meta name="description" content="在这儿，使用的是express3的版本，我这儿用的是3.4.7版本，如果直接安装，目前是express4的版本，最后会导致某些错误，没有经过测试，所以，希望安装的时候，选择3的版本安装。可以在cmd中使用如下命令安装：
 
-npm install express@3.4.7 -save
+npm install express@3.4.7 --save
 
 
-如果不知道">
+如果不知">
     
     
     
@@ -88,7 +88,7 @@ npm install express@3.4.7 -save
     </p>
   <p class="article-time">
     <time datetime="2014-11-05T15:28:12.000Z" itemprop="datePublished">11月 5 2014</time>
-    更新日期:<time datetime="2014-11-05T16:55:09.000Z" itemprop="dateModified">11月 6 2014</time>
+    更新日期:<time datetime="2014-11-07T14:23:05.000Z" itemprop="dateModified">11月 7 2014</time>
     
   </p>
 </header>
@@ -102,16 +102,16 @@ npm install express@3.4.7 -save
 		
 		<p>在这儿，使用的是express3的版本，我这儿用的是3.4.7版本，如果直接安装，目前是express4的版本，最后会导致某些错误，没有经过测试，所以，希望安装的时候，选择3的版本安装。<br>可以在cmd中使用如下命令安装：</p>
 <pre>
-npm install express@3.4.7 -save
+npm install express@3.4.7 --save
 </pre>
 
 <p>如果不知道怎么使用，也可在cmd中使用npm的help进行查看：<br>例如，需要查看npm install的参数，可以使用：</p>
 <pre>
-npm install help
+npm install -help
 </pre>
 进行查看；
 
-下面，先开始布置网站的整体结构，如下：
+下面，先开始布置网站的整体结构，如下：<br>
 
 |--website<br>
 &nbsp;&nbsp;&nbsp;&nbsp;|--Bll  // 业务逻辑层<br>
@@ -124,7 +124,7 @@ npm install help
 &nbsp;&nbsp;&nbsp;&nbsp;|--Views  //页面文件夹 <br>
 &nbsp;&nbsp;&nbsp;&nbsp;|--package.json <br>
 &nbsp;&nbsp;&nbsp;&nbsp;|--config.js  //配置文件<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--app.js //启动文件
+&nbsp;&nbsp;&nbsp;&nbsp;|--app.js //启动文件<br>
 
 
 以上就是整个项目的结构图，可以根据此，建立项目结构及相应文件进行开发。
@@ -204,20 +204,13 @@ app.configure(function (){
     app.engine('.html', cons.swig);
     app.set('views engine', 'html');
     app.use(express.favicon());
-    app.use(express.logger('dev'));
     app.use(express.json());
     app.use(express.urlencoded());
     app.use(express.methodOverride());
-    app.use(express.cookieParser('nothing'));
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
 });
 require('simple-mvc')(app);//配置mvc
-
-// development only
-if ('development' == app.get('env')) {
-    app.use(express.errorHandler());
-}
 
 http.createServer(app).listen(config.port, function(){
     console.log('Server listening on port ' + config.port);
