@@ -7,24 +7,12 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>linux_ftp | payne blog</title>
+    <title>control-view | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="Linux进行ftp设置
-1.更新yum源
-
-#yum update
-
-###2.安装vsftp
-使用yum命令安装vsftp
-
-#yum install vsftpd -y
-
-
-3.添加ftp帐号和目录
-先检查一下nologin的位置，通常在/usr/sbin/nologin或者/sbin/nol">
+    <meta name="description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;今天，我们将开始使用control及views进行主页的添加，先开始静态页面的添加；">
     
     
     
@@ -87,15 +75,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/11/03/linux-ftp/" title="linux_ftp" itemprop="url">linux_ftp</a>
+      <a href="/2014/11/07/control-view/" title="control-view" itemprop="url">control-view</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-11-02T16:26:11.000Z" itemprop="datePublished">11月 3 2014</time>
-    更新日期:<time datetime="2014-11-02T16:33:50.000Z" itemprop="dateModified">11月 3 2014</time>
+    <time datetime="2014-11-07T14:30:03.000Z" itemprop="datePublished">11月 7 2014</time>
+    更新日期:<time datetime="2014-11-07T14:34:22.000Z" itemprop="dateModified">11月 7 2014</time>
     
   </p>
 </header>
@@ -104,78 +92,30 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux进行ftp设置"><span class="toc-number">1.</span> <span class="toc-text">Linux进行ftp设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-更新yum源"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.更新yum源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-添加ftp帐号和目录"><span class="toc-number">1.0.2.</span> <span class="toc-text">3.添加ftp帐号和目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-配置vsftp"><span class="toc-number">1.0.3.</span> <span class="toc-text">4.配置vsftp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-修改shell配置"><span class="toc-number">1.0.4.</span> <span class="toc-text">5.修改shell配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-启动vsftp服务并测试登录"><span class="toc-number">1.0.5.</span> <span class="toc-text">6.启动vsftp服务并测试登录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#service_vsftpd_start"><span class="toc-number">2.</span> <span class="toc-text">service vsftpd start</span></a></li></ol>
+		
 		</div>
 		
-		<h1 id="Linux进行ftp设置">Linux进行ftp设置</h1>
-<h3 id="1-更新yum源">1.更新yum源</h3>
-<pre>
-#yum update
-</pre>
-###2.安装vsftp
-使用yum命令安装vsftp
-<pre>
-#yum install vsftpd -y
-</pre>
-
-<h3 id="3-添加ftp帐号和目录">3.添加ftp帐号和目录</h3>
-<p>先检查一下nologin的位置，通常在/usr/sbin/nologin或者/sbin/nologin下。<br>使用下面的命令创建帐户，该命令指定了/alidata/www为用户pwftp的家目录，您可以自己定义帐户名和目录：</p>
-<pre>
-#useradd -d /alidata/www -s /sbin/nologin pwftp
-其中，pwftp即为登录用户名
-</pre>
-
-<p>修改该帐户密码:</p>
-<pre>
-#passwd pwftp
-其中，pwftp即为登录密码
-</pre>
-
-<p>修改指定目录的权限</p>
-<pre>
-#chown -R pwftp.pwftp /alidata/www
-</pre>
-
-<h3 id="4-配置vsftp">4.配置vsftp</h3>
-<p>编辑vsftp配置文件，命令如下：</p>
-<pre>
-#vim /etc/vsftpd/vsftpd.conf
-
-将配置文件中”anonymous_enable=YES “改为 “anonymous_enable=NO”
-取消如下配置前的注释符号：
-local_enable=YES
-write_enable=YES
-chroot_local_user=YES
-保存修改，按ESC键，输入：wq
-</pre>
-
-<h3 id="5-修改shell配置">5.修改shell配置</h3>
-<p>vi编辑/etc/shells，如果该文件里没有/usr/sbin/nologin或者/sbin/nologin（具体看当前系统配置）则追加进去</p>
-<h3 id="6-启动vsftp服务并测试登录">6.启动vsftp服务并测试登录</h3>
-<p>使用命令启动vsftp服务：</p>
-<p><pre></pre></p>
-<h1 id="service_vsftpd_start">service vsftpd start</h1>
-<p><br>然后用帐号pwftp测试下是否可以登陆ftp。目录是/alidata/www。</p>
+		<p>&nbsp;&nbsp;&nbsp;&nbsp;今天，我们将开始使用control及views进行主页的添加，先开始静态页面的添加；</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/linux/">Linux</a>
+  <span></span> <a href="/tags/nodejs/">nodejs</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/linux/">Linux</a>
+  <a class="article-category-link" href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/">使用nodejs、mongodb、express、linux搭建社区网站</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/11/03/linux-ftp/" data-title="linux_ftp | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2014/11/07/control-view/" data-title="control-view | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -184,19 +124,11 @@ chroot_local_user=YES
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/11/03/nml1/" title="使用nodejs、mongodb、express、linux搭建社区网站(前言)">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  使用nodejs、mongodb、express、linux搭建社区网站(前言)</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/11/03/Hexo/"  title="Hexo的使用">
+<a href="/2014/11/05/node-app/"  title="node项目创建及app.js生成">
  <strong>NEXT:</strong><br/> 
- <span>Hexo的使用
+ <span>node项目创建及app.js生成
 </span>
 </a>
 </div>
@@ -213,7 +145,7 @@ chroot_local_user=YES
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux进行ftp设置"><span class="toc-number">1.</span> <span class="toc-text">Linux进行ftp设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-更新yum源"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.更新yum源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-添加ftp帐号和目录"><span class="toc-number">1.0.2.</span> <span class="toc-text">3.添加ftp帐号和目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-配置vsftp"><span class="toc-number">1.0.3.</span> <span class="toc-text">4.配置vsftp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-修改shell配置"><span class="toc-number">1.0.4.</span> <span class="toc-text">5.修改shell配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-启动vsftp服务并测试登录"><span class="toc-number">1.0.5.</span> <span class="toc-text">6.启动vsftp服务并测试登录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#service_vsftpd_start"><span class="toc-number">2.</span> <span class="toc-text">service vsftpd start</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
