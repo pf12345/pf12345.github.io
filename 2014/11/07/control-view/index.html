@@ -12,7 +12,9 @@
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;今天，我们将开始使用control及views进行主页的添加，先开始静态页面的添加；">
+    <meta name="description" content="今天，我们将开始使用control及views进行主页的添加，先开始静态页面的添加；我们先使用静态页面来完成页面展示部分，进行路由搭建。
+代码在github上：nodejs-express-mongodb-website项目
+首先，我们先在views文件夹里创建一个文件shared文件夹，用于存放公">
     
     
     
@@ -83,7 +85,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-11-07T14:30:03.000Z" itemprop="datePublished">11月 7 2014</time>
-    更新日期:<time datetime="2014-11-07T14:34:22.000Z" itemprop="dateModified">11月 7 2014</time>
+    更新日期:<time datetime="2014-11-10T16:21:38.000Z" itemprop="dateModified">11月 11 2014</time>
     
   </p>
 </header>
@@ -95,7 +97,163 @@
 		
 		</div>
 		
-		<p>&nbsp;&nbsp;&nbsp;&nbsp;今天，我们将开始使用control及views进行主页的添加，先开始静态页面的添加；</p>
+		<p>今天，我们将开始使用control及views进行主页的添加，先开始静态页面的添加；我们先使用静态页面来完成页面展示部分，进行路由搭建。</p>
+<p>代码在github上：<br><a href="https://github.com/pf12345/nodejs-express-mongodb-website" target="_blank" rel="external">nodejs-express-mongodb-website项目</a></p>
+<p>首先，我们先在views文件夹里创建一个文件shared文件夹，用于存放公用模板，比如每个页面使用相同的头header及脚footer等:</p>
+<p>1、首先创建layout.html模板文件：</p>
+<pre>
+&lt;!DOCTYPE html>
+&lt;html>
+&lt;head lang="en">
+    &lt;meta charset="UTF-8">
+    &lttitle>control-view&lt;/title>
+    &lt;link rel="icon" href="/images/icon/chetan.ico"/>
+    &lt;link rel="stylesheet" href="/css/custom.css"/>
+    &lt;link rel="stylesheet" href="/css/style.css"/>
+    &lt;script src="/js/jquery-1.7.2.min.js">&lt;/script>
+    &lt;script src="/js/common.js">&lt;/script>
+&lt;/head>
+&lt;body>
+&lt;div id="body-wrapper">
+    &lt;!---------- header -------->
+    &lt;div id="header">
+        &lt;div class="clearfix">
+            &lt;div class="logo">
+                &lt;a href="/">&lt;h1>车谈&lt;/h1>&lt;/a>
+            &lt;/div>
+            &lt;ul class="navigation">
+                &lt;li class="active">
+                    &lt;a href="#">问题&lt;/a>
+                &lt;/li>
+                &lt;li class="active">
+                    &lt;a href="#">资料库&lt;/a>
+                &lt;/li>
+                &lt;li>
+                    &lt;a href="#">用户中心&lt;/a>
+                &lt;/li>
+            &lt;/ul>
+        &lt;/div>
+    &lt;/div>
+    &lt;!---------- header end ----->
+    &lt;div class="loginAndRegister">
+        &lt;div>
+            &lt;div class="login">
+                &lt;input type="text" placeholder="邮箱地址"/>
+                &lt;input type="password" placeholder="密码"/>
+                &lt;input type="button" placeholder="登录" value="登录"/>
+            &lt;/div>
+            &lt;span>没有账号，&lt;a href="/user/register">马上注册&lt;/a>&lt;/span>
+        &lt;/div>
+    &lt;/div>
+
+&lt;/div>
+&lt;/body>
+&lt;/html>
+</pre>
+
+<p>需要注意的是，在项目中，使用的是swig的模板，所以，比如，在里面有：</p>
+<pre>
+
+</pre>
+
+<p>这个就是swig的写法，这部分就是每个页面自己的单独内容，在下面将会使用，在这里就不再赘述，可以查看<a href="http://paularmstrong.github.io/swig/" target="_blank" rel="external">swig文档</a>学习swig相关知识。</p>
+<p>2、在views中创建home文件夹，并创建index页面，作为网站首页；</p>
+<pre>
+<code>
+大括号% extends '../shared/layout.html' %大括号 （注：因为编译原因，“大括号就是表示 ‘{’ 或者 ‘}’ ”）
+
+</code>
+&lt;div id="contents" class="user">
+    &lt;div class="clearfix">
+        &lt;div class="wenda clearfix">
+            &lt;div class="fl wenda-main">
+                &lt;div class="newpost">
+                    &lt;a href="javascript:void 0" id="user-question" class="quealltab  onactive">提问&lt;/a>
+                    &lt;a href="javascript:void 0" id="user-answer" class="quealltab ">回答&lt;/a>
+                &lt;/div>
+                &lt;!--左侧列表内容-->
+                &lt;div class="wenda-list">
+                    &lt;div class="question">
+                        &lt;p style="margin: 25px">
+                            没有提问，&lt;a href="/">提出问题&lt;/a>
+                        &lt;/p>
+                        &lt;div class="wenda-listcon clearfix">
+                            &lt;div class="wendaslider fl">
+                                &lt;h2 class="wendaquetitle">
+                                    &lt;div class="wendatitlecon">
+                                        &lt;a href="" target="_blank" class="wendatitle">网站&lt;/a>
+                                    &lt;/div>
+                                &lt;/h2>
+                                &lt;div class="replycont clearfix">
+                                    &lt;div class="fl replydes">
+                                        &lt;span class="replydet">这是nodejs、mongodb、express网站首页&lt;/span>
+                                    &lt;/div>
+                                &lt;/div>
+                                &lt;div class="replymegfooter">
+                                    &lt;div class="wenda-time">
+                                        &lt;em>提问时间：2014-11-10&lt;/em>
+                                    &lt;/div>
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/div>
+            &lt;/div>
+        &lt;/div>
+    &lt;/div>
+&lt;/div>
+
+</pre>
+
+<p>其中 </p>
+<pre>{大括号% extends '../shared/layout.html' %大括号 （注：因为编译原因，“大括号就是表示 ‘{’ 或者 ‘}’ ”）</pre>
+ 是使用上面创建的模板文件，而 
+<pre> .....html code.... </pre>
+中间内容则代替在layout.html中
+<pre> </pre> 而形成一个完整的html文件，即主页文件。
+
+3、创建路由，在controllers文件夹中创建home.coffee文件，写入如下代码：
+<pre>
+###
+  主页
+###
+exports.index = (req, res)->
+  res.render "index",
+    title: "首页"
+</pre>
+
+<p>上面是coffee的写法，需要转为相应js才能执行，其中，res.render就是编译index.html文件。<br>其实，在项目中，使用了simple-mvc模块，它就是将controllers里面的文件与views里面html文件进行关联，比如，对于controllers里面的home.js文件中，使用的render “index”,即使用的是views文件夹下面的home文件的index.html文件。</p>
+<p>而对于路由，请求路径也就是controllers里面的文件，如我们刚刚创建的home.coffee文件，编译成home.js,在它里面，写了：</p>
+<pre>
+exports.index = (req,res) ->
+    //code
+</pre>
+
+<p>当我们请求：localhost或者localhost/home时，将会打开此路由及主页页面，也就是我们上面创建的页面。因为，默认/home可以省略，所以上面等价，我们以后将会使用此方式进行页面及相应路由添加，在以后使用中，会慢慢去熟悉和了解它。</p>
+<p>4、启动，打开主页。</p>
+<p>创建完成之后，打开mongodb、redis，再打开项目app.js目录，运行如下代码：</p>
+<pre>
+node app.js
+</pre>
+
+<p>但是会出现以下错误：</p>
+<pre>
+Error: Cannot find module 'swig'
+</pre>
+
+<p>说明缺失swig模块，所以需要添加swig模块：</p>
+<pre>
+npm install swig --save
+</pre>
+
+<p>添加swig模块后，再启动，会看到控制台有以下结果：</p>
+<pre>
+Server listening on port 80
+connect mongodb success...
+</pre>
+
+<p>则说明启动成功，且监控80端口，因为80端口默认，可以省略，则，我们在浏览器中打开：localhost或localhost/home都可以查看主页。</p>
+<p>今天，就完成了路由及主页的完成，在下一部分，将开始mongodb及的创建及连接，完成一个完整的前后流程。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
