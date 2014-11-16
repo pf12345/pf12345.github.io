@@ -13,8 +13,8 @@
     <meta name="author" content="彭锋">
     
     <meta name="description" content="今天，我们将开始使用control及views进行主页的添加，先开始静态页面的添加；我们先使用静态页面来完成页面展示部分，进行路由搭建。
-代码在github上：nodejs-express-mongodb-website项目
-首先，我们先在views文件夹里创建一个文件shared文件夹，用于存放公">
+代码在github上：nodejs-express-mongodb-website项目，下面的所有的js、css、image等文件均可以在里面找到；
+首先，我们先">
     
     
     
@@ -85,7 +85,7 @@
     </p>
   <p class="article-time">
     <time datetime="2014-11-07T14:30:03.000Z" itemprop="datePublished">11月 7 2014</time>
-    更新日期:<time datetime="2014-11-11T15:18:08.000Z" itemprop="dateModified">11月 11 2014</time>
+    更新日期:<time datetime="2014-11-16T09:02:45.000Z" itemprop="dateModified">11月 16 2014</time>
     
   </p>
 </header>
@@ -98,9 +98,9 @@
 		</div>
 		
 		<p>今天，我们将开始使用control及views进行主页的添加，先开始静态页面的添加；我们先使用静态页面来完成页面展示部分，进行路由搭建。</p>
-<p>代码在github上：<br><a href="https://github.com/pf12345/nodejs-express-mongodb-website" target="_blank" rel="external">nodejs-express-mongodb-website项目</a></p>
+<p>代码在github上：<br><a href="https://github.com/pf12345/nodejs-express-mongodb-website" target="_blank" rel="external">nodejs-express-mongodb-website项目</a>，下面的所有的js、css、image等文件均可以在里面找到；</p>
 <p>首先，我们先在views文件夹里创建一个文件shared文件夹，用于存放公用模板，比如每个页面使用相同的头header及脚footer等:</p>
-<p>1、首先创建layout.html模板文件：</p>
+<p>1、首先创建layout.html模板文件（<b>注：因为编译原因，’大括号’就是表示 ‘{’ 或者 ‘}’ </b>）：</p>
 <pre>
 &lt;!DOCTYPE html>
 &lt;html>
@@ -135,6 +135,7 @@
         &lt;/div>
     &lt;/div>
     &lt;!---------- header end ----->
+大括号% if !isLogin %大括号
     &lt;div class="loginAndRegister">
         &lt;div>
             &lt;div class="login">
@@ -145,7 +146,8 @@
             &lt;span>没有账号，&lt;a href="/user/register">马上注册&lt;/a>&lt;/span>
         &lt;/div>
     &lt;/div>
-
+大括号% endif %大括号
+    大括号% block content %大括号 大括号% endblock %大括号
 &lt;/div>
 &lt;/body>
 &lt;/html>
@@ -153,15 +155,15 @@
 
 <p>需要注意的是，在项目中，使用的是swig的模板，所以，比如，在里面有：</p>
 <pre>
-
+ 大括号% block content %大括号 大括号% endblock %大括号
 </pre>
 
 <p>这个就是swig的写法，这部分就是每个页面自己的单独内容，在下面将会使用，在这里就不再赘述，可以查看<a href="http://paularmstrong.github.io/swig/" target="_blank" rel="external">swig文档</a>学习swig相关知识。</p>
 <p>2、在views中创建home文件夹，并创建index页面，作为网站首页；</p>
 <pre>
 <code>
-大括号% extends '../shared/layout.html' %大括号 （注：因为编译原因，“大括号就是表示 ‘{’ 或者 ‘}’ ”）
-
+大括号% extends '../shared/layout.html' %大括号 （<b>注：因为编译原因，'大括号'就是表示 ‘{’ 或者 ‘}’</b>）
+大括号% block content %大括号
 </code>
 &lt;div id="contents" class="user">
     &lt;div class="clearfix">
@@ -202,15 +204,16 @@
         &lt;/div>
     &lt;/div>
 &lt;/div>
-
+大括号% endblock %大括号
 </pre>
 
 <p>其中 </p>
-<pre>{大括号% extends '../shared/layout.html' %大括号 （注：因为编译原因，“大括号就是表示 ‘{’ 或者 ‘}’ ”）</pre>
+<pre>{大括号% extends '../shared/layout.html' %大括号 （<b>注：因为编译原因，'大括号'就是表示 ‘{’ 或者 ‘}’</b>）</pre>
  是使用上面创建的模板文件，而 
-<pre> .....html code.... </pre>
+<pre>大括号% block content %大括号 .....html code.... 大括号% endblock %大括号</pre>
 中间内容则代替在layout.html中
-<pre> </pre> 而形成一个完整的html文件，即主页文件。
+<pre>大括号% block content %大括号 大括号% endblock %大括号</pre> 
+而形成一个完整的html文件，即主页文件。
 
 3、创建路由，在controllers文件夹中创建home.coffee文件，写入如下代码：
 <pre>
@@ -282,6 +285,14 @@ connect mongodb success...
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2014/11/16/initMongo/" title="使用nodejs、mongodb、express、linux搭建社区网站(3)-mongodb连接及注册的开发">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  使用nodejs、mongodb、express、linux搭建社区网站(3)-mongodb连接及注册的开发</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2014/11/05/node-app/"  title="使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成">
@@ -333,7 +344,7 @@ connect mongodb success...
 		
 			<li><a href="/categories/linux/" title="Linux">Linux<sup>1</sup></a></li>
 		
-			<li><a href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/" title="使用nodejs、mongodb、express、linux搭建社区网站">使用nodejs、mongodb、express、linux搭建社区网站<sup>4</sup></a></li>
+			<li><a href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/" title="使用nodejs、mongodb、express、linux搭建社区网站">使用nodejs、mongodb、express、linux搭建社区网站<sup>5</sup></a></li>
 		
 			<li><a href="/categories/other/" title="其他">其他<sup>1</sup></a></li>
 		
@@ -350,7 +361,7 @@ connect mongodb success...
 		
 			<li><a href="/tags/linux/" title="Linux">Linux<sup>1</sup></a></li>
 		
-			<li><a href="/tags/nodejs/" title="nodejs">nodejs<sup>4</sup></a></li>
+			<li><a href="/tags/nodejs/" title="nodejs">nodejs<sup>5</sup></a></li>
 		
 		</ul>
 </div>
