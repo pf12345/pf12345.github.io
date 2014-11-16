@@ -1,0 +1,674 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>使用nodejs、mongodb、express、linux搭建社区网站(3)-mongodb连接及注册的开发 | payne blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="彭锋">
+    
+    <meta name="description" content="代码在github上：nodejs-express-mongodb-website项目，所用的文件均可以在里面找到。
+今天，我们主要完成与数据库mongodb的连接及通过注册的实现，完成对数据库进行写入的操作。
+首先，我们完成与数据库的连接：1、写数据库配置信息：
+打开主目录下config.js，在">
+    
+    
+    
+    
+    <link rel="alternate" href="atom.xml" title="payne blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            var _bdId ='55ed1a31343705d1f9534afb45758171';
+             hm.src = "//hm.baidu.com/hm.js?" + _bdId;
+             var s = document.getElementsByTagName("script")[0]; 
+             s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+     
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="payne blog">payne blog</a></h1>
+				<a class="blog-motto">you are your job</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+                                            <form class="search" action=http://search.baidu.com/cse/search target="_blank">
+                                            <label>Search</label>
+                                        <input name="s" type="hidden" value= null ><input type="text" name="q" size="30" placeholder="搜索"><br>
+					
+					</li>
+				</ul>
+                            </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/16/initMongo/" title="使用nodejs、mongodb、express、linux搭建社区网站(3)-mongodb连接及注册的开发" itemprop="url">使用nodejs、mongodb、express、linux搭建社区网站(3)-mongodb连接及注册的开发</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-16T06:04:37.000Z" itemprop="datePublished">11月 16 2014</time>
+    更新日期:<time datetime="2014-11-16T09:03:26.000Z" itemprop="dateModified">11月 16 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>代码在github上：<br><a href="https://github.com/pf12345/nodejs-express-mongodb-website" target="_blank" rel="external">nodejs-express-mongodb-website项目</a>，所用的文件均可以在里面找到。</p>
+<p>今天，我们主要完成与数据库mongodb的连接及通过注册的实现，完成对数据库进行写入的操作。</p>
+<p>首先，我们完成与数据库的连接：<br>1、写数据库配置信息：</p>
+<p>打开主目录下config.js，在里面写入以下代码：</p>
+<pre>
+/**
+ *数据库信息
+ * @type {cookieSecret: string, db: string, host: string}
+ */
+exports.dbInfo = {
+    cookieSecret:'12345',  //数据库密码
+    db: 'website',  //数据库名称
+    host: 'localhost'  //数据库主机地址
+};
+</pre>
+
+
+<p>2、新建连接帮助文件：</p>
+<p>在主目录下，新建helper文件夹，用于存放各种帮助操作，在文件夹里创建dbHelper.coffee文件，写入以下代码：</p>
+<pre>
+config = require('../config')  ##获取配置文件，以获得上面的配置信息
+Db = require('mongodb').Db  ##创建数据库
+Connection = require('mongodb').Connection ##创建连接
+Server = require('mongodb').Server ##创建服务
+mongodb = new Db(config.dbInfo.db, new Server(config.dbInfo.host, Connection.DEFAULT_PORT, {auto_reconnect:true}), {safe: true}) ##创建mongodb对象
+
+exports.newDb = () ->
+    return mongodb
+
+###
+    连接数据库 dbName
+###
+exports.connectDB = (dbName, cb, success) ->
+    mongodb.open (err, db) ->
+        if err
+            cb new Error(err)
+        else
+            db.collection dbName, (err, collection) ->
+                if err
+                    cb new Error("数据库连接失败")
+                    mongodb.close()
+                else
+                    if success and typeof success is "function"
+                        success(collection)
+</pre>
+
+<p>上面，暴露一个连接数据库中某张表的方法，例如，如果打开用户表，进行操作时，首先，调用此方法，进行表的连接，再进行操作，在下面，我们会进行用户注册，进行用户信息的写入操作，将会使用。</p>
+<p>此方法调用时，需传入三个参数： 表的名字，一个回调函数，连接表成功后的操作函数；</p>
+<p>再次，我们将进行用户注册的页面：</p>
+<p>1、新建注册页面及路由：</p>
+<p>在controllers文件夹下，创建user.coffee文件，用于写所有与用户相关的路由，如： </p>
+<pre>
+注册：/user/register
+登录： /user/login
+用户主页： /user/:id
+......
+</pre>
+
+<p>创建后，先写注册路由(在user.coffee文件中写入)：</p>
+<pre>
+userBll = require("../Bll/userBll");  ##添加用户业务逻辑模块
+
+###
+    注册
+    @param name
+    @param email
+    @param password
+###
+exports.register_GET_POST = (req, res) ->
+    loc = parseInt(Math.random() * 100) % 10  ##在已有的头像中随机头像
+    if req.method is  "POST"
+        user =
+            name: req.body.name ##用户名
+            email : req.body.email ##用户邮箱
+            password : req.body.password ##用户密码
+            resNum: 0  ##回答数目
+            ansNum: 0  ##提问数目
+            avatar: "/images/avatar-big/default"+loc+".jpg" ##用户头像
+            score: 0 ##用户积分
+        userBll.register user,(err, result)->
+            if err
+                res.send
+                    code: 1
+                    message: err.message
+            else
+                setSession(req, result[0])
+                res.redirect '/explore'
+    else
+        res.render "register",
+            isLogin: true
+
+
+###
+    创建session
+###
+setSession = (req, result) ->
+    req.session.userId = result._id.toString()
+    req.session.userName = result.name
+    req.session.userEmail = result.email
+    req.session.userAvatar = result.avatar
+</pre>
+
+<p>在上面，首先添加需要的相关模块，目前，需要用户逻辑模块，这个一会儿我们会在下面完成，再次，则暴露出注册的接口，它分为post和get请求，get请求则为请求注册页面，post请求则为注册的接口，进行用户注册。对于，用于用户注册的接口，我们在下面再详细说，目前只为了能够打开注册页面，而最后的setSession方法则是在注册成功后，让其自动为登录状态并写入session中。</p>
+<p>在上面的暴露的register接口中，当get方法时，有以下代码：</p>
+<pre>
+res.render "register",
+    isLogin: true
+</pre>
+
+<p>它就是用于渲染注册页面，而isLogin用于控制在页面中是否展示登录框，当设置为true时，则不展示，控制代码在views/shared/layout.html中，有如下代码：</p>
+<pre>
+大括号% if !isLogin %大括号
+    //code
+大括号% endif %大括号
+这是swig写法，如果！isLogin为true时，渲染其中html代码，反之，不渲染；
+</pre>
+
+<p>在主目录views中创建user文件夹，用于与上controllers中user.coffee的路由进行对应，用于存放所以用户相关的页面，如注册、登录、用户信息等页面；</p>
+<p>在上面新建的user文件夹下创建register.html文件，写入如下代码（<b>注：因为编译原因，’大括号’就是表示 ‘{’ 或者 ‘}’</b>）：</p>
+<pre>
+大括号% extends '../shared/layout.html' %大括号
+大括号% block content %大括号
+&lt;div id="contents" class="register">
+    &lt;div class="clearfix">
+        &lt;h1>欢迎加入车谈&lt;/h1>
+        &lt;form method="post" action="/user/register">
+            &lt;div class="name">
+                &lt;label>名号&lt;/label>&lt;input name="name" type="text"/>
+            &lt;/div>
+            &lt;div class="email">
+                &lt;label>邮箱&lt;/label>&lt;input name="email" type="text"/>
+            &lt;/div>
+            &lt;div class="pwd">
+                &lt;label>密码&lt;/label>&lt;input name="password" type="password"/>
+            &lt;/div>
+            &lt;div class="submit">
+                &lt;input type="submit" disabled value="注册"/>
+            &lt;/div>
+        &lt;/form>
+    &lt;/div>
+&lt;/div>
+大括号% endblock %大括号
+</pre>
+
+<p>2、添加userBll.coffee，启动，展示注册页面：</p>
+<p>在主目录下的Bll文件下，创建userBll.coffee文件，暂时不写入任何代码，再启动redis和mongodb服务，在主目录下，通过命令行，运行如下：</p>
+<pre>
+nodejs app
+</pre>
+
+<p><b>注：在每次启动时，需要把所有coffee文件重新编译为js文件</b>，我使用的webstorm自动编译的，也可查看coffeeScript的文档，通过命令编译。否则，会报错而无法运行。</p>
+<p>启动后，在浏览器中输入：<a href="http://localhost/user/register" target="_blank" rel="external">http://localhost/user/register</a></p>
+<p>最后，我们来写注册用户接口，即在页面中form表单提交的接口： /user/register, 方法是post请求：</p>
+<p>1、连接数据库及用户信息写入数据库：</p>
+<p>在主目录下的Dal文件夹中，创建dbUser.coffee文件，其为与用户相关的与数据库的操作的代码，如注册时写入用户信息到数据库，登录时查询用户信息，获取用户信息时从数据库查询用户信息等方法；</p>
+<p>创建成功后，先写入以下代码：</p>
+<pre>
+dbHelper = require('../helper/dbHelper') ##添加数据库帮助模块，用于获取connectDB方法
+mongodb = dbHelper.newDb();
+
+###
+    注册
+    @param user.name {String} 用户名
+    @param user.password {String} 用户密码
+    @param user.email {String} 用户登录邮箱
+    @param user.resNum {Number} 用户回答问题数目
+    @param user.ansNum {Number} 用户提出问题数目
+    @param user.avartar {String} 用户头像url
+    @param user.score {Number} 用户积分
+###
+exports.register = (user, cb) ->
+    dbHelper.connectDB "userInfo", cb, (collection) ->
+        collection.findOne user, (err, doc) ->
+            if doc
+                cb new Error("已经存在该用户")
+                mongodb.close()
+            else
+                collection.insert user, {
+                    safe: true
+                }, (err, u) ->
+                    if err
+                        cb new Error("注册失败")
+                    else
+                        cb null, u
+                    mongodb.close()
+</pre>
+
+<p>此方法，向外暴露注册用户的接口，以供业务逻辑中注册接口调用，需要传入两个参数： user及cb，其中，user为一个用户信息对象，然后就是一个回调函数，首先，调用刚刚上面写的dbHelper文件中的connectDB方法，<br>在调用时，传入需要连接的表名‘userInfo’,还有回调函数及连接成功后需要执行的函数：</p>
+<p>连接成功后，首先通过传入的用户对象，在数据库进行匹配，查出是否已经拥有此用户，其中，findOne方法就是mongodb中查找一个的方法，如果查询出来了，说明已经存在，则调用回调函数cb然后关闭mongodb，如果没有查询出来，说明还没注册，则将用户信息写入数据库，则使用mongodb中insert用法，如果插入成功，则返回一个null的错误及注册用户信息，如果插入失败，则返回一个“注册失败”的错误；<b>注：如果需要更加详细了解mongodb用户，可以查看其官网文档</b>；</p>
+<p>2、添加业务逻辑文件中注册接口：</p>
+<p>在上面创建的 /Bll/userBll.coffee文件中添加如下代码：</p>
+<pre>
+dbUser = require("../Dal/dbUser")
+
+###
+    注册
+###
+exports.register = (user, cb) ->
+    dbUser.register user, cb
+</pre>
+
+<p>其将供 /controllers/user中的register接口调用，调用代码在上面用户注册的post方法中；</p>
+<p>3、启动<br>使用以前方式，在主目录下，通过命令行，使用</p>
+<pre>node app</pre>
+启动，但是，会报如下错误：
+<pre>
+Error: Cannot find module 'mongodb'
+</pre>
+说明缺少‘mongodb’模块，则在主目录下，使用如下添加：
+
+<pre>
+npm install mongodb --save
+</pre>
+
+<p>然后，重新启动，然后如果不报错，则打开浏览器，打开localhost/user/register</p>
+<p>然后进行注册测试；如果需要查询注册的用户信息，则使用如下：</p>
+<p>1、使用cmd打开命令行，</p>
+<p>2、进入你安装的mongodb安装位置，找到bin文件夹目录，然后运行如下：</p>
+<pre>
+mongo
+</pre>
+
+<p>则会显示：</p>
+<p><pre><br>Mongodb shell version: 版本号（我这儿是2.4.12）<br>……<br>&gt;<br></pre><br>则启动mongodb命令行，则可以进行mongodb相关操作</p>
+<p>3、打开数据库并查看用户信息(在刚刚打开的mongodb命令行中操作)</p>
+<p><pre><br>show dbs //查看所有的mongodb数据库<br></pre><br>会显示你目前有的所有的mongodb数据库</p>
+<p><pre><br>use website //使用某个数据库，我们使用的是website数据库(在config.js中配置的)<br></pre><br>会显示：switched to db website，说明目前使用的是website数据库</p>
+<p><pre><br>db.userInfo.find() //查看用户表内容<br></pre><br>会显示所有用户表的内容，则可以查看是否注册成功并写入数据库；</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/nodejs/">nodejs</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/">使用nodejs、mongodb、express、linux搭建社区网站</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://pf12345.github.io/2014/11/16/initMongo/" data-title="使用nodejs、mongodb、express、linux搭建社区网站(3)-mongodb连接及注册的开发 | payne blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2014/11/07/control-view/"  title="使用nodejs、mongodb、express、linux搭建社区网站(3)-页面与路由">
+ <strong>NEXT:</strong><br/> 
+ <span>使用nodejs、mongodb、express、linux搭建社区网站(3)-页面与路由
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		<a href="http://weibo.com/2926579772" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/pf12345" target="_blank" title="github"></a>
+		
+		
+		
+	</div>
+</div>
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/" title="使用nodejs、mongodb、express、linux搭建社区网站">使用nodejs、mongodb、express、linux搭建社区网站<sup>5</sup></a></li>
+		
+			<li><a href="/categories/other/" title="其他">其他<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/hexo/" title="Hexo">Hexo<sup>1</sup></a></li>
+		
+			<li><a href="/tags/linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/nodejs/" title="nodejs">nodejs<sup>5</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://hexo.io" target="_blank" title="Hexo">Hexo</a></li>
+      <li><a href="http://gengbiao.me" target="_blank" title="coney">coney's Blog</a></li>
+    </ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">标签云</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/hexo/" style="font-size: 10.00px;">Hexo</a><a href="/tags/linux/" style="font-size: 10.00px;">Linux</a><a href="/tags/nodejs/" style="font-size: 20.00px;">nodejs</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2014 
+		
+		<a href="http://pf12345.github.io" target="_blank" title="彭锋">彭锋</a>
+		
+            && Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> && Theme by <a href="http://gengbiao.me" target="_blank" title="coney">coney</a>
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<script>
+    
+        var _bdImg = '4';
+    
+    window._bd_share_config={
+        "common":{
+            "bdSnsKey":{
+
+            },
+            "bdText":"",
+            "bdMini":"2",
+            "bdMiniList":[
+                "qzone",
+                "tsina",
+                "weixin",
+                "renren",
+                "tqq",
+                "tieba",
+                "douban",
+                "sqq",
+                "diandian",
+                "huaban",
+                "youdao",
+                "mail",
+                "ty",
+                "fbook",
+                "twi",
+                "linkedin",
+                "copy",
+                "print"
+            ],
+            "bdPic":"",
+            "bdStyle":"0",
+            "bdSize":"16"
+        },
+        "slide":{
+            "type":"slide",
+            "bdImg":_bdImg,
+            "bdPos":"right",
+            "bdTop":"350"
+        },
+        "image":{
+            "viewList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ],
+            "viewText":"分享：",
+            "viewSize":"16"
+        },
+        "selectShare":{
+            "bdContainerClass":null,
+            "bdSelectMiniList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ]
+        }
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'null', 'null');  
+ga('send', 'pageview');
+</script>
+
+
+  </body>
+</html>
+

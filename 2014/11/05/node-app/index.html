@@ -1,0 +1,594 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="baidu_union_verify" content="d1952c66cf48912e21c18c7c581f382a">
+  <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
+<meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
+  
+    <title>使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成 | payne blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="彭锋">
+    
+    <meta name="description" content="代码在github上：nodejs-express-mongodb-website项目，所用的文件均可以在里面找到。
+在这儿，使用的是express3的版本，我这儿用的是3.4.7版本，如果直接安装，目前是express4的版本，最后会导致某些错误，没有经过测试，所以，希望安装的时候，选择3的版本安">
+    
+    
+    
+    
+    <link rel="alternate" href="atom.xml" title="payne blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            var _bdId ='55ed1a31343705d1f9534afb45758171';
+             hm.src = "//hm.baidu.com/hm.js?" + _bdId;
+             var s = document.getElementsByTagName("script")[0]; 
+             s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+     
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="payne blog">payne blog</a></h1>
+				<a class="blog-motto">you are your job</a>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">首页</a></li>
+					
+						<li><a href="/archives">归档</a></li>
+					
+					<li>
+					
+                                            <form class="search" action=http://search.baidu.com/cse/search target="_blank">
+                                            <label>Search</label>
+                                        <input name="s" type="hidden" value= null ><input type="text" name="q" size="30" placeholder="搜索"><br>
+					
+					</li>
+				</ul>
+                            </nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/05/node-app/" title="使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成" itemprop="url">使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-05T15:28:12.000Z" itemprop="datePublished">11月 5 2014</time>
+    更新日期:<time datetime="2014-11-16T07:19:03.000Z" itemprop="dateModified">11月 16 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>代码在github上：<br><a href="https://github.com/pf12345/nodejs-express-mongodb-website" target="_blank" rel="external">nodejs-express-mongodb-website项目</a>，所用的文件均可以在里面找到。</p>
+<p>在这儿，使用的是express3的版本，我这儿用的是3.4.7版本，如果直接安装，目前是express4的版本，最后会导致某些错误，没有经过测试，所以，希望安装的时候，选择3的版本安装。<br>可以在cmd中使用如下命令安装：</p>
+<pre>
+npm install express@3.4.7 --save
+</pre>
+
+<p>如果不知道怎么使用，也可在cmd中使用npm的help进行查看：<br>例如，需要查看npm install的参数，可以使用：</p>
+<pre>
+npm install -help
+</pre>
+进行查看；
+
+下面，先开始布置网站的整体结构，如下：<br>
+
+|--website<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--Bll  // 业务逻辑层<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--Dal  // Data Access Layer 数据访问层<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--controllers  // 控制层 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--helper  // 用于存放操作中的某些帮助文件 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--public  // 静态文件夹,请在git下载相关资源文件 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--css  // css文件夹<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--js  // js文件夹<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--image // 图片资源文件夹 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--views  //页面文件夹 <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--package.json <br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--config.js  //配置文件<br>
+&nbsp;&nbsp;&nbsp;&nbsp;|--app.js //启动文件<br>
+
+
+以上就是整个项目的结构图，可以根据此，建立项目结构及相应文件进行开发。
+
+首先，先进行app.js的开发，也就是先启动起来。
+1、先按照上面结构，建好项目，
+
+2、在之前，需要安装一些需要的模块；
+
+安装express：
+<pre>
+npm install express@3.4.7 --save
+</pre>
+
+<p>安装connect-mongo:</p>
+<pre>
+npm install connect-mongo --save
+</pre>
+
+<p>安装consolidate：</p>
+<pre>
+npm install consolidate --save
+</pre>
+
+<p>安装multi-process-session：</p>
+<pre>
+npm install multi-process-session --save
+</pre>
+
+<p>安装simple-mvc：</p>
+<pre>
+npm install simple-mvc --save
+</pre>
+3、添加配置文件config.js,主要配置端口号及数据库信息
+<pre>
+/**
+ * 端口配置
+ * @type {number}
+ */
+exports.port = 80;
+
+
+/**
+ *数据库信息
+ */
+exports.dbInfo = {
+    cookieSecret:'mysecret',
+    db: 'website',
+    host: 'localhost'
+};
+</pre>
+
+<p>4、开发app.js</p>
+<pre>
+<code>
+var express = require('express');
+var http = require('http');
+var path = require('path');
+var MongoStore = require('connect-mongo')(express);
+var config = require('./config');
+var cons = require('consolidate');
+
+var sessionStore = new MongoStore({
+    db:config.dbInfo.db
+}, function() {
+    console.log('connect mongodb success...');
+});
+
+var app = express();
+
+
+app.use(express.cookieParser('aa')); //cookie处理
+require("multi-process-session")(app, 'cookie');
+
+app.configure(function (){
+    app.set('views', path.join(__dirname, 'views'));
+    app.engine('.html', cons.swig);
+    app.set('views engine', 'html');
+    app.use(express.favicon());
+    app.use(express.json());
+    app.use(express.urlencoded());
+    app.use(express.methodOverride());
+    app.use(app.router);
+    app.use(express.static(path.join(__dirname, 'public')));
+});
+require('simple-mvc')(app);//配置mvc
+
+http.createServer(app).listen(config.port, function(){
+    console.log('Server listening on port ' + config.port);
+});
+</code>
+</pre>
+
+<p>5、启动app.js<br>在启动之前，需要先下载一个redis，<a href="http://www.redis.io/download" target="_blank" rel="external">redis下载</a><br>下载后，解压，双击redis-server.exe启动即可；还得按照上一节的讲解启动mongodb的服务。</p>
+<p>在app.js的同一目录下，打开cmd使用以下命令启动：</p>
+<pre>
+node app.js
+</pre>
+
+<p>如果显示如下，说明启动成功：<br><img src="/img/qdsuccess.png"></p>
+<p>如果有以下错误：</p>
+<pre>
+Error:failed to connect to [127.0.0.1:27017]
+
+说明你没有启动mongodb服务，
+</pre>
+
+
+<pre>
+Error: Redis connection to 127.0.0.1:6379 failed - read ECONNRESET
+
+说明没有启动redis服务
+</pre>
+
+<p>暂时，先启动了nodejs，在下面，将会进行视图，及控制器的使用。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/nodejs/">nodejs</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/">使用nodejs、mongodb、express、linux搭建社区网站</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://pf12345.github.io/2014/11/05/node-app/" data-title="使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成 | payne blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/07/control-view/" title="使用nodejs、mongodb、express、linux搭建社区网站(3)-页面与路由">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  使用nodejs、mongodb、express、linux搭建社区网站(3)-页面与路由</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/04/nodejs1/"  title="使用nodejs、mongodb、express、linux搭建社区网站(1)-nodejs、mongodb在windows下安装">
+ <strong>NEXT:</strong><br/> 
+ <span>使用nodejs、mongodb、express、linux搭建社区网站(1)-nodejs、mongodb在windows下安装
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+<div id="authorInfo">
+	
+		<div class="author-logo"></div>		
+	
+	<div class="social-list" class="clearfix">
+		
+		<a href="http://weibo.com/2926579772" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/pf12345" target="_blank" title="github"></a>
+		
+		
+		
+	</div>
+</div>
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/" title="使用nodejs、mongodb、express、linux搭建社区网站">使用nodejs、mongodb、express、linux搭建社区网站<sup>5</sup></a></li>
+		
+			<li><a href="/categories/other/" title="其他">其他<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/hexo/" title="Hexo">Hexo<sup>1</sup></a></li>
+		
+			<li><a href="/tags/linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/nodejs/" title="nodejs">nodejs<sup>5</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+      <li><a href="http://hexo.io" target="_blank" title="Hexo">Hexo</a></li>
+      <li><a href="http://gengbiao.me" target="_blank" title="coney">coney's Blog</a></li>
+    </ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="atom.xml" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+  
+  <div class="tagcloudlist">
+    <p class="asidetitle">标签云</p>
+    <div class="tagcloudlist clearfix">
+       <a href="/tags/hexo/" style="font-size: 10.00px;">Hexo</a><a href="/tags/linux/" style="font-size: 10.00px;">Linux</a><a href="/tags/nodejs/" style="font-size: 20.00px;">nodejs</a>
+    </div>
+  </div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+    
+            <p class="copyright"> © 2014 
+		
+		<a href="http://pf12345.github.io" target="_blank" title="彭锋">彭锋</a>
+		
+            && Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> && Theme by <a href="http://gengbiao.me" target="_blank" title="coney">coney</a>
+            </div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"null"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+<script>
+    
+        var _bdImg = '4';
+    
+    window._bd_share_config={
+        "common":{
+            "bdSnsKey":{
+
+            },
+            "bdText":"",
+            "bdMini":"2",
+            "bdMiniList":[
+                "qzone",
+                "tsina",
+                "weixin",
+                "renren",
+                "tqq",
+                "tieba",
+                "douban",
+                "sqq",
+                "diandian",
+                "huaban",
+                "youdao",
+                "mail",
+                "ty",
+                "fbook",
+                "twi",
+                "linkedin",
+                "copy",
+                "print"
+            ],
+            "bdPic":"",
+            "bdStyle":"0",
+            "bdSize":"16"
+        },
+        "slide":{
+            "type":"slide",
+            "bdImg":_bdImg,
+            "bdPos":"right",
+            "bdTop":"350"
+        },
+        "image":{
+            "viewList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ],
+            "viewText":"分享：",
+            "viewSize":"16"
+        },
+        "selectShare":{
+            "bdContainerClass":null,
+            "bdSelectMiniList":[
+                "weixin",
+                "qzone",
+                "tsina",
+                "renren",
+                "douban",
+                "tqq"
+            ]
+        }
+    };
+    with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+
+
+
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'null', 'null');  
+ga('send', 'pageview');
+</script>
+
+
+  </body>
+</html>
+
