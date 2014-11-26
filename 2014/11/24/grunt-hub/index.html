@@ -7,13 +7,19 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成 | payne blog</title>
+    <title>使用grunt-hub实现多个grunt项目运行 | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="代码在github上：nodejs-express-mongodb-website项目，所用的文件均可以在里面找到。
-在这儿，使用的是express3的版本，我这儿用的是3.4.7版本，如果直接安装，目前是express4的版本，最后会导致某些错误，没有经过测试，所以，希望安装的时候，选择3的版本安">
+    <meta name="description" content="作为前端开发人员，grunt是一个非常好的自动化工具，可以简化你的工作，减轻你的劳动。而且grunt提供了数量庞大的插件供使用。
+首先，简单安装grunt(首先需要安装node及npm环境)：
+1、安装全局 grunt-cli:
+
+npm install -g grunt-cli
+
+
+2、新建项目及">
     
     
     
@@ -76,15 +82,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/11/05/node-app/" title="使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成" itemprop="url">使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成</a>
+      <a href="/2014/11/24/grunt-hub/" title="使用grunt-hub实现多个grunt项目运行" itemprop="url">使用grunt-hub实现多个grunt项目运行</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-11-05T15:28:12.000Z" itemprop="datePublished">11月 5 2014</time>
-    更新日期:<time datetime="2014-11-16T07:19:03.000Z" itemprop="dateModified">11月 16 2014</time>
+    <time datetime="2014-11-24T13:15:20.000Z" itemprop="datePublished">11月 24 2014</time>
+    更新日期:<time datetime="2014-11-26T14:55:32.000Z" itemprop="dateModified">11月 26 2014</time>
     
   </p>
 </header>
@@ -96,168 +102,97 @@
 		
 		</div>
 		
-		<p>代码在github上：<br><a href="https://github.com/pf12345/nodejs-express-mongodb-website" target="_blank" rel="external">nodejs-express-mongodb-website项目</a>，所用的文件均可以在里面找到。</p>
-<p>在这儿，使用的是express3的版本，我这儿用的是3.4.7版本，如果直接安装，目前是express4的版本，最后会导致某些错误，没有经过测试，所以，希望安装的时候，选择3的版本安装。<br>可以在cmd中使用如下命令安装：</p>
+		<p>作为前端开发人员，grunt是一个非常好的自动化工具，可以简化你的工作，减轻你的劳动。而且grunt提供了数量庞大的插件供使用。</p>
+<p>首先，简单安装grunt(首先需要安装node及npm环境)：</p>
+<p>1、安装全局 grunt-cli:</p>
 <pre>
-npm install express@3.4.7 --save
+npm install -g grunt-cli
 </pre>
 
-<p>如果不知道怎么使用，也可在cmd中使用npm的help进行查看：<br>例如，需要查看npm install的参数，可以使用：</p>
+<p>2、新建项目及添加配置文件： package.json；此文件放置于根目录，并与gruntfile.js文件处于同一目录，主要用于存储需要依赖的npm模块及grunt插件模块，如：</p>
 <pre>
-npm install -help
-</pre>
-进行查看；
-
-下面，先开始布置网站的整体结构，如下：<br>
-
-|--website<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--Bll  // 业务逻辑层<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--Dal  // Data Access Layer 数据访问层<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--controllers  // 控制层 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--helper  // 用于存放操作中的某些帮助文件 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--public  // 静态文件夹,请在git下载相关资源文件 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--css  // css文件夹<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--js  // js文件夹<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--image // 图片资源文件夹 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--views  //页面文件夹 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--package.json <br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--config.js  //配置文件<br>
-&nbsp;&nbsp;&nbsp;&nbsp;|--app.js //启动文件<br>
-
-
-以上就是整个项目的结构图，可以根据此，建立项目结构及相应文件进行开发。
-
-首先，先进行app.js的开发，也就是先启动起来。
-1、先按照上面结构，建好项目，
-
-2、在之前，需要安装一些需要的模块；
-
-安装express：
-<pre>
-npm install express@3.4.7 --save
+{
+  "name": "my-project-name",
+  "version": "0.1.0",
+  "devDependencies": {
+    "grunt": "~0.4.1"
+  }
+}
 </pre>
 
-<p>安装connect-mongo:</p>
+<p>如果你有node项目，也使用了package.json文件，则可以使用同一个；</p>
+<p>3、安装grunt：</p>
+<p>在项目目录，使用以下命令进行安装：</p>
 <pre>
-npm install connect-mongo --save
+npm install grunt --save-dev
 </pre>
 
-<p>安装consolidate：</p>
+<p>4、安装grunt插件：</p>
+<p>在这里，就使用js及css压缩及使用grunt-hub进行多个grunt项目实现。</p>
+<p>首先安装grunt-hub：</p>
 <pre>
-npm install consolidate --save
+npm install grunt-hub --save-dev
 </pre>
 
-<p>安装multi-process-session：</p>
+<p>安装css压缩插件：</p>
 <pre>
-npm install multi-process-session --save
+npm install grunt-contrib-cssmin --save-dev
 </pre>
 
-<p>安装simple-mvc：</p>
+<p>安装js压缩插件：</p>
 <pre>
-npm install simple-mvc --save
+npm install grunt-contrib-uglify --save-dev
 </pre>
-3、添加配置文件config.js,主要配置端口号及数据库信息
+
+<p>安装完后，就开始配置gruntfile.js文件，根据每个插件的api进行相关的配置。</p>
+<p>下面开始使用grunt-hub完成多个grunt文件一次性执行：</p>
+<p>在项目下创建grunt文件夹，用于存放所有grunt配置文件，尤其对于较大项目时，可以将整个grunt按一定方式分开，再统一执行。下面，我们将js及css压缩分开执行进行说明：</p>
+<p>1、在grunt文件夹下，首先创建gruntJs.js文件夹，用于打包压缩js文件：</p>
 <pre>
-/**
- * 端口配置
- * @type {number}
- */
-exports.port = 80;
-
-
-/**
- *数据库信息
- */
-exports.dbInfo = {
-    cookieSecret:'mysecret',
-    db: 'website',
-    host: 'localhost'
+module.exports = function(grunt) {
+    grunt.initConfig({
+        uglify: {
+            js: {
+                files: {
+                    '../public/js/main.min.js': [
+                        '../public/js/common.js',
+                    ]
+                }
+            }
+        }
+    });
+    grunt.loadTasks('../node_modules/grunt-contrib-uglify/tasks');
+    grunt.registerTask('default', [ 'uglify']);
 };
 </pre>
 
-<p>4、开发app.js</p>
-<pre>
-<code>
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var MongoStore = require('connect-mongo')(express);
-var config = require('./config');
-var cons = require('consolidate');
-
-var sessionStore = new MongoStore({
-    db:config.dbInfo.db
-}, function() {
-    console.log('connect mongodb success...');
-});
-
-var app = express();
-
-
-app.use(express.cookieParser('aa')); //cookie处理
-require("multi-process-session")(app, 'cookie');
-
-app.configure(function (){
-    app.set('views', path.join(__dirname, 'views'));
-    app.engine('.html', cons.swig);
-    app.set('views engine', 'html');
-    app.use(express.favicon());
-    app.use(express.json());
-    app.use(express.urlencoded());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    app.use(express.static(path.join(__dirname, 'public')));
-});
-require('simple-mvc')(app);//配置mvc
-
-http.createServer(app).listen(config.port, function(){
-    console.log('Server listening on port ' + config.port);
-});
-</code>
-</pre>
-
-<p>5、启动app.js<br>在启动之前，需要先下载一个redis，<a href="http://www.redis.io/download" target="_blank" rel="external">redis下载</a><br>下载后，解压，双击redis-server.exe启动即可；还得按照上一节的讲解启动mongodb的服务。</p>
-<p>在app.js的同一目录下，打开cmd使用以下命令启动：</p>
-<pre>
-node app.js
-</pre>
-
-<p>如果显示如下，说明启动成功：<br><img src="/img/qdsuccess.png"></p>
-<p>如果有以下错误：</p>
-<pre>
-Error:failed to connect to [127.0.0.1:27017]
-
-说明你没有启动mongodb服务，
-</pre>
-
-
-<pre>
-Error: Redis connection to 127.0.0.1:6379 failed - read ECONNRESET
-
-说明没有启动redis服务
-</pre>
-
-<p>暂时，先启动了nodejs，在下面，将会进行视图，及控制器的使用。</p>
+<p>这里，使用的是grunt-contrib-uglify进行压缩，具体用法可以参照<a target="_blank" href="https://github.com/gruntjs/grunt-contrib-uglify">grunt-contrib-uglify使用</a>;</p>
+<p>2、在grunt文件夹下创建gruntCss.js文件，用于打包压缩css文件：</p>
+<p><pre><br>module.exports = function(grunt) {<br>    grunt.initConfig({<br>        cssmin: {<br>            js: {<br>                files: {<br>                    ‘../public/css/main.min.css’: [<br>                        ‘../public/css/custom.css’,<br>                        ‘../public/css/style.css’<br>                    ]<br>                }<br>            }<br>        }<br>    });<br>    grunt.loadTasks(‘../node_modules/grunt-contrib-cssmin/tasks’);<br>    grunt.registerTask(‘default’, [ ‘cssmin’]);<br>};<br></pre><br>这里，使用的是grunt-contrib-cssmin进行压缩，具体用法可以参照<a target="_blank" href="https://github.com/gruntjs/grunt-contrib-cssmin">grunt-contrib-cssmin使用</a>;</p>
+<p>3、在根目录下，创建Gruntfile.js文件，此文件为grunt入口文件，也是启动文件,内容如下：</p>
+<p><pre><br>module.exports = function(grunt) {<br>    grunt.initConfig({<br>        hub: {<br>            all: {<br>                src: [‘./grunt/gruntCss.js’, ‘./grunt/gruntJs.js’]，<br>                //tasks: [‘jshint’, ‘nodeunit’],<br>            }<br>        }<br>    });<br>    grunt.loadNpmTasks(‘grunt-hub’);<br>    grunt.registerTask(‘default’, [ ‘hub’]);<br>};<br></pre><br>这里，使用了grunt-hub文件，在里面有src参数，可以设置需要执行的grunt文件的相对地址，而且还有一个tasks参数，可以不用设置，如果不设置，则是自动执行每个地址下grunt文件里的default任务，如果设置，则是执行设置的任务。</p>
+<p>完成后，在项目下打开命令行，执行</p>
+<p><pre><br>grunt<br></pre><br>后，便可以将js及css进行压缩打包了。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/nodejs/">nodejs</a>
+  <span></span> <a href="/tags/grunt/">grunt</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/使用nodejs、mongodb、express、linux搭建社区网站/">使用nodejs、mongodb、express、linux搭建社区网站</a>
+  <a class="article-category-link" href="/categories/grunt/">grunt</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/11/05/node-app/" data-title="使用nodejs、mongodb、express、linux搭建社区网站(2)-项目创建及app.js生成 | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2014/11/24/grunt-hub/" data-title="使用grunt-hub实现多个grunt项目运行 | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -266,19 +201,11 @@ Error: Redis connection to 127.0.0.1:6379 failed - read ECONNRESET
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/11/07/control-view/" title="使用nodejs、mongodb、express、linux搭建社区网站(3)-页面与路由">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  使用nodejs、mongodb、express、linux搭建社区网站(3)-页面与路由</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/11/04/nodejs1/"  title="使用nodejs、mongodb、express、linux搭建社区网站(1)-nodejs、mongodb在windows下安装">
+<a href="/2014/11/16/initMongo/"  title="使用nodejs、mongodb、express、linux搭建社区网站(4)-mongodb连接及注册的开发">
  <strong>NEXT:</strong><br/> 
- <span>使用nodejs、mongodb、express、linux搭建社区网站(1)-nodejs、mongodb在windows下安装
+ <span>使用nodejs、mongodb、express、linux搭建社区网站(4)-mongodb连接及注册的开发
 </span>
 </a>
 </div>
