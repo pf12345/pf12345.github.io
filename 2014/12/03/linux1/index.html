@@ -7,24 +7,14 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>linux_ftp | payne blog</title>
+    <title>linux目录及简单vim命令 | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="Linux进行ftp设置
-1.更新yum源
-
-#yum update
-
-###2.安装vsftp
-使用yum命令安装vsftp
-
-#yum install vsftpd -y
-
-
-3.添加ftp帐号和目录
-先检查一下nologin的位置，通常在/usr/sbin/nologin或者/sbin/nol">
+    <meta name="description" content="在学习linux时，让我最搞不清也不好记住的就是linux的主目录，也即是根目录，所以就查找了写资料，差不多有以下：
+主要目录：
+/ 根目录│├ boot/ 启动文件。所有与系统启动有关的文件都保存在这里│├ dev/ 设备文件├ proc/ 内核与进程镜像│├ mnt/ 临时挂载├ media/ ">
     
     
     
@@ -87,15 +77,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/11/03/linux-ftp/" title="linux_ftp" itemprop="url">linux_ftp</a>
+      <a href="/2014/12/03/linux1/" title="linux目录及简单vim命令" itemprop="url">linux目录及简单vim命令</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-11-02T16:26:11.000Z" itemprop="datePublished">11月 3 2014</time>
-    更新日期:<time datetime="2014-11-02T16:33:50.000Z" itemprop="dateModified">11月 3 2014</time>
+    <time datetime="2014-12-03T13:03:31.000Z" itemprop="datePublished">12月 3 2014</time>
+    更新日期:<time datetime="2014-12-03T14:47:31.000Z" itemprop="dateModified">12月 3 2014</time>
     
   </p>
 </header>
@@ -104,78 +94,127 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux进行ftp设置"><span class="toc-number">1.</span> <span class="toc-text">Linux进行ftp设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-更新yum源"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.更新yum源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-添加ftp帐号和目录"><span class="toc-number">1.0.2.</span> <span class="toc-text">3.添加ftp帐号和目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-配置vsftp"><span class="toc-number">1.0.3.</span> <span class="toc-text">4.配置vsftp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-修改shell配置"><span class="toc-number">1.0.4.</span> <span class="toc-text">5.修改shell配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-启动vsftp服务并测试登录"><span class="toc-number">1.0.5.</span> <span class="toc-text">6.启动vsftp服务并测试登录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#service_vsftpd_start"><span class="toc-number">2.</span> <span class="toc-text">service vsftpd start</span></a></li></ol>
+		
 		</div>
 		
-		<h1 id="Linux进行ftp设置">Linux进行ftp设置</h1>
-<h3 id="1-更新yum源">1.更新yum源</h3>
-<pre>
-#yum update
-</pre>
-###2.安装vsftp
-使用yum命令安装vsftp
-<pre>
-#yum install vsftpd -y
-</pre>
-
-<h3 id="3-添加ftp帐号和目录">3.添加ftp帐号和目录</h3>
-<p>先检查一下nologin的位置，通常在/usr/sbin/nologin或者/sbin/nologin下。<br>使用下面的命令创建帐户，该命令指定了/alidata/www为用户pwftp的家目录，您可以自己定义帐户名和目录：</p>
-<pre>
-#useradd -d /alidata/www -s /sbin/nologin pwftp
-其中，pwftp即为登录用户名
-</pre>
-
-<p>修改该帐户密码:</p>
-<pre>
-#passwd pwftp
-其中，pwftp即为登录密码
-</pre>
-
-<p>修改指定目录的权限</p>
-<pre>
-#chown -R pwftp.pwftp /alidata/www
-</pre>
-
-<h3 id="4-配置vsftp">4.配置vsftp</h3>
-<p>编辑vsftp配置文件，命令如下：</p>
-<pre>
-#vim /etc/vsftpd/vsftpd.conf
-
-将配置文件中”anonymous_enable=YES “改为 “anonymous_enable=NO”
-取消如下配置前的注释符号：
-local_enable=YES
-write_enable=YES
-chroot_local_user=YES
-保存修改，按ESC键，输入：wq
-</pre>
-
-<h3 id="5-修改shell配置">5.修改shell配置</h3>
-<p>vi编辑/etc/shells，如果该文件里没有/usr/sbin/nologin或者/sbin/nologin（具体看当前系统配置）则追加进去</p>
-<h3 id="6-启动vsftp服务并测试登录">6.启动vsftp服务并测试登录</h3>
-<p>使用命令启动vsftp服务：</p>
-<p><pre></pre></p>
-<h1 id="service_vsftpd_start">service vsftpd start</h1>
-<p><br>然后用帐号pwftp测试下是否可以登陆ftp。目录是/alidata/www。</p>
+		<p>在学习linux时，让我最搞不清也不好记住的就是linux的主目录，也即是根目录，所以就查找了写资料，差不多有以下：</p>
+<p>主要目录：</p>
+<p>/ 根目录<br>│<br>├ boot/ 启动文件。所有与系统启动有关的文件都保存在这里<br>│<br>├ dev/ 设备文件<br>├ proc/ 内核与进程镜像<br>│<br>├ mnt/ 临时挂载<br>├ media/ 挂载媒体设备<br>│<br>├ root/ root用户的$HOME目录<br>├ home/<br>│<br>├ bin/ 系统程序<br>├ sbin/ 管理员系统程序<br>├ lib/ 系统程序库文件<br>├ etc/ 系统程序和大部分应用程序的全局配置文件<br>│ ├ init.d/ SystemV风格的启动脚本<br>│ ├ rcX.d/ 启动脚本的链接定义运行级别<br>│ ├ network/ 网络配置文件<br>│<br>├ usr/<br>│ ├ bin/ 应用程序<br>│ ├ sbin/ 管理员应用程序<br>│ ├ lib/ 应用软件的函数库、目标文件<br>│ ├ share/ 放置共享文件的地方<br>│ ├ src/ 应用程序源代码<br>│ ├ local/  系统管理员在本机自行下载安装的软件<br>│ ├ X11R6/ 为X Window系统重要数据放置目录<br>│<br>├ var/ 动态数据<br>│<br>├ temp/ 临时文件<br>├ lost+found/ 磁盘修复文件 </p>
+<p>/dev 设备文件，保存所有设备与接口设备，如硬盘设备文件、光驱设备文件。 </p>
+<p>/home 系统默认的用户主文件夹 </p>
+<p>/lib 该目录用来存放系统开机时使用的函数库</p>
+<p>/mnt 挂载目录，用来临时挂载别的文件系统或者别的硬件设备</p>
+<p>/proc 此目录信息是在内存中由系统自己产生的，都存放在内存中</p>
+<p>/sbin 系统管理员命令存放目录，开机过程中所需要的命令，如开机、修复、还原系统所需要的命令</p>
+<p>/usr 最大的目录，用户的很多应用程序和文件都存放在该目录下。 </p>
+<p>/usr/src linux内核源代码，linux系统所安装的内核源代码都保存在此。 </p>
+<p>/usr/include 系统头文件，存储一些C语言文件。 </p>
+<p>/usr/lib 存放常用到动态链共享库，静态文件库。 </p>
+<p>/usr/bin 应用软件的函数库、目标文件</p>
+<p>/usr/sbin 管理员应用程序 </p>
+<p>/var 缓存、登录文件、以及某些软件运行时所产生文件</p>
+<p>/opt 用户存储第三方软件的目录。</p>
+<p>/tmp 临时文件的目录用来存放不同程序执行时产生的临时文件。</p>
+<p>/root 管理员的根目录一般只有管理员才可访问。 </p>
+<p>在linux中，vim也是很重要的部分，但是vim需要记住很多的按键，而且，在使用时，需要注意其分为三种模式：一般模式、编辑模式、命令行模式；</p>
+<p>一般模式： 打开文件直接进入一般模式，在此模式，可以移动光标、删除、复制、粘贴等操作</p>
+<p>编辑模式： 一般模式不能编辑文件内容，如果按下i、I、a、A、o、O等进入编辑模式，编辑文件内容，如果按esc键，则退出编辑模式进入一般模式；</p>
+<p>命令行模式：当一般模式下，按下“：、/、？”则进入命令行模式，可以进行查找、替换等操作，如果按下esc则退出进入一般模式；</p>
+<p>vim常用按键：</p>
+<p>插入命令</p>
+<p>i 在当前位置生前插入</p>
+<p>I 在当前行首插入</p>
+<p>a 在当前位置后插入</p>
+<p>A 在当前行尾插入</p>
+<p>o 在当前行之后插入一行</p>
+<p>O 在当前行之前插入一行</p>
+<p>查找命令</p>
+<p>/text　　查找text，按n健查找下一个，按N健查找前一个。</p>
+<p>?text　　查找text，反向查找，按n健查找下一个，按N健查找前一个。</p>
+<p>vim中有一些特殊字符在查找时需要转义　　.*[]^%/?~$</p>
+<p>:set ignorecase　　忽略大小写的查找</p>
+<p>:set noignorecase　　不忽略大小写的查找</p>
+<p>查找很长的词，如果一个词很长，键入麻烦，可以将光标移动到该词上，按*或#键即可以该单词进行搜索，相当于/搜索。而#命令相当于?搜索。</p>
+<p>:set hlsearch　　高亮搜索结果，所有结果都高亮显示，而不是只显示一个匹配。</p>
+<p>:set nohlsearch　　关闭高亮搜索显示</p>
+<p>:nohlsearch　　关闭当前的高亮显示，如果再次搜索或者按下n或N键，则会再次高亮。</p>
+<p>:set incsearch　　逐步搜索模式，对当前键入的字符进行搜索而不必等待键入完成。</p>
+<p>:set wrapscan　　重新搜索，在搜索到文件头或尾时，返回继续搜索，默认开启。</p>
+<p>替换命令</p>
+<p>ra 将当前字符替换为a，当期字符即光标所在字符。</p>
+<p>s/old/new/ 用old替换new，替换当前行的第一个匹配</p>
+<p>s/old/new/g 用old替换new，替换当前行的所有匹配</p>
+<p>%s/old/new/ 用old替换new，替换所有行的第一个匹配</p>
+<p>%s/old/new/g 用old替换new，替换整个文件的所有匹配</p>
+<p>:10,20 s/^/ /g 在第10行知第20行每行前面加四个空格，用于缩进。</p>
+<p>ddp 交换光标所在行和其下紧邻的一行。</p>
+<p>移动命令</p>
+<p>h 左移一个字符<br>l 右移一个字符，这个命令很少用，一般用w代替。<br>k 上移一个字符<br>j 下移一个字符<br>以上四个命令可以配合数字使用，比如20j就是向下移动20行，5h就是向左移动5个字符<br>在Vim中，很多命令都可以配合数字使用，比如删除10个字符10x，在当前位置后插入3个！，3a！，这里的Esc是必须的，否则命令不生效。</p>
+<p>w 向前移动一个单词（光标停在单词首部），如果已到行尾，则转至下一行行首。此命令快，可以代替l命令。</p>
+<p>b 向后移动一个单词 2b 向后移动2个单词</p>
+<p>0（数字0）移动到本行第一个字符上</p>
+<p>$ 移动到行尾 3$ 移动到下面3行的行尾</p>
+<p>gg 移动到文件顶部</p>
+<p>G 移动到文件底部</p>
+<p>nG n为数字，移动到文件第n行</p>
+<p>跳到指定行，冒号+行号，回车，比如跳到240行就是 :240回车。另一个方法是行号+G，比如230G跳到230行。</p>
+<p>Ctrl + e 向下滚动一行</p>
+<p>Ctrl + y 向上滚动一行</p>
+<p>Ctrl + d 向下滚动半屏</p>
+<p>Ctrl + u 向上滚动半屏</p>
+<p>Ctrl + f 向下滚动一屏</p>
+<p>Ctrl + b 向上滚动一屏</p>
+<p>u 撤销（Undo） U 撤销对整行的操作 Ctrl + r 重做（Redo），即撤销的撤销。</p>
+<p>删除命令</p>
+<p>x 删除当前字符</p>
+<p>3x 删除当前光标开始向后三个字符</p>
+<p>X 删除当前字符的前一个字符。X=dh</p>
+<p>dl 删除当前字符， dl=x</p>
+<p>dh 删除前一个字符</p>
+<p>dd 删除当前行</p>
+<p>dj 删除上一行</p>
+<p>dk 删除下一行</p>
+<p>10d 删除当前行开始的10行。</p>
+<p>D 删除当前字符至行尾。D=d$</p>
+<p>d$ 删除当前字符之后的所有字符（本行）</p>
+<p>J(shift + j)　　删除两行之间的空行，实际上是合并两行。</p>
+<p>拷贝和粘贴</p>
+<p>yy 拷贝当前行</p>
+<p>nyy 拷贝当前后开始的n行，比如2yy拷贝当前行及其下一行。</p>
+<p>p 在当前光标后粘贴,如果之前使用了yy命令来复制一行，那么就在当前行的下一行粘贴。</p>
+<p>:1,10 co 20 将1-10行插入到第20行之后。</p>
+<p>:1,$ co $ 将整个文件复制一份并添加到文件尾部。</p>
+<p>正常模式下按v（逐字）或V（逐行）进入可视模式，然后用jklh命令移动即可选择某些行或字符，再按y即可复制</p>
+<p>ddp交换当前行和其下一行</p>
+<p>xp交换当前字符和其后一个字符</p>
+<p>剪切命令</p>
+<p>正常模式下按v（逐字）或V（逐行）进入可视模式，然后用jklh命令移动即可选择某些行或字符，再按d即可剪切</p>
+<p>ndd 剪切当前行之后的n行。利用p命令可以对剪切的内容进行粘贴</p>
+<p>:1,10d 将1-10行剪切。利用p命令可将剪切后的内容进行粘贴。</p>
+<p>:1, 10 m 20 将第1-10行移动到第20行之后。</p>
+<p>退出命令</p>
+<p>:wq 保存并退出</p>
+<p>ZZ 保存并退出</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/linux/">Linux</a>
+  <span></span> <a href="/tags/linux/">linux</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/linux/">Linux</a>
+  <a class="article-category-link" href="/categories/linux/">linux</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/11/03/linux-ftp/" data-title="linux_ftp | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2014/12/03/linux1/" data-title="linux目录及简单vim命令 | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -184,19 +223,11 @@ chroot_local_user=YES
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/11/03/nml1/" title="使用nodejs、mongodb、express、linux搭建社区网站(前言)">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  使用nodejs、mongodb、express、linux搭建社区网站(前言)</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/11/03/Hexo/"  title="Hexo的使用">
+<a href="/2014/11/30/user-other/"  title="使用nodejs、mongodb、express、linux搭建社区网站(5)-用户登录及个人主页">
  <strong>NEXT:</strong><br/> 
- <span>Hexo的使用
+ <span>使用nodejs、mongodb、express、linux搭建社区网站(5)-用户登录及个人主页
 </span>
 </a>
 </div>
@@ -213,7 +244,7 @@ chroot_local_user=YES
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux进行ftp设置"><span class="toc-number">1.</span> <span class="toc-text">Linux进行ftp设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-更新yum源"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.更新yum源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-添加ftp帐号和目录"><span class="toc-number">1.0.2.</span> <span class="toc-text">3.添加ftp帐号和目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-配置vsftp"><span class="toc-number">1.0.3.</span> <span class="toc-text">4.配置vsftp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-修改shell配置"><span class="toc-number">1.0.4.</span> <span class="toc-text">5.修改shell配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-启动vsftp服务并测试登录"><span class="toc-number">1.0.5.</span> <span class="toc-text">6.启动vsftp服务并测试登录</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#service_vsftpd_start"><span class="toc-number">2.</span> <span class="toc-text">service vsftpd start</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
