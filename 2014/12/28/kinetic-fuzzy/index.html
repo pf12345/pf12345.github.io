@@ -7,13 +7,16 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>stage及layer创建 | payne blog</title>
+    <title>kinetic-fuzzy | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="kineticjs作为html5 canvas框架，首先，我们应该学会如何创建一个canvas，因为，只有学会如何创建一个canvas，才能进一步使用kinetic实现更复杂的功能。 
-一、创建stage：在kinetic中，stage对象是用于包裹canvas的节点，当需要创建canvas时，首先">
+    <meta name="description" content="在做项目中，使用kineticjs进行canvas相关操作，在使用过程中发现了一个问题，就是在创建的图像中，发现有时候会出现图像模糊，虚化的现象。如下图：
+
+如上图，在左边方框与右边方框相比，左边明显清楚很多，右边明显有虚化反应，这是为什么呢？其实，对于三个方框，创建代码如下：
+
+ var stag">
     
     
     
@@ -76,15 +79,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/07/02/kinetic-2/" title="stage及layer创建" itemprop="url">stage及layer创建</a>
+      <a href="/2014/12/28/kinetic-fuzzy/" title="kinetic-fuzzy" itemprop="url">kinetic-fuzzy</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-07-02T14:26:46.000Z" itemprop="datePublished">7月 2 2014</time>
-    更新日期:<time datetime="2014-11-23T14:39:44.000Z" itemprop="dateModified">11月 23 2014</time>
+    <time datetime="2014-12-28T13:28:30.000Z" itemprop="datePublished">12月 28 2014</time>
+    更新日期:<time datetime="2014-12-28T14:40:51.000Z" itemprop="dateModified">12月 28 2014</time>
     
   </p>
 </header>
@@ -96,65 +99,58 @@
 		
 		</div>
 		
-		<p>kineticjs作为html5 canvas框架，首先，我们应该学会如何创建一个canvas，因为，只有学会如何创建一个canvas，才能进一步使用kinetic实现更复杂的功能。 </p>
-<p>一、创建stage：<br>在kinetic中，stage对象是用于包裹canvas的节点，当需要创建canvas时，首先必须创建stage，再在stage中进行canvas的创建。<br>首先，在html的body中创建一个div元素，并给一个id值，在这儿，我们使用“id=container”，代码如下： </p>
+		<p>在做项目中，使用kineticjs进行canvas相关操作，在使用过程中发现了一个问题，就是在创建的图像中，发现有时候会出现图像模糊，虚化的现象。如下图：</p>
+<p><img src="/img/mohu.png"></p>
+<p>如上图，在左边方框与右边方框相比，左边明显清楚很多，右边明显有虚化反应，这是为什么呢？其实，对于三个方框，创建代码如下：</p>
 <pre>
-&lt;!DOCTYPE html>
-&lt;html>
-    &lt;head>
-        &lt;title>&lt;/title>
-        &lt;style>
-             #container > div {
-                 background: #ccc;
-             }
-             #container canvas {
-                 border: 1px solid gold !important;
-             }
-        &lt;/style>
-    &lt;/head>
-    &lt;body>
-        &lt;div id="container">&lt;/div>
-    &lt;/body>
-&lt;/html>                
-</pre>
-
-<p>然后，我们通过js创建stage,代码如下： </p>
-<pre>
-&lt;script>
-var stage = new Kinetic.Stage({
+ var stage = new Kinetic.Stage({
+     container: "test",
      width: 400,
-     height: 300,
-     container: "container"
+     height: 400
 });
-&lt;/script>
-</pre>
-
-<p>这样，你就会看到在container下已经成功创建一个div，其class为kineticjs-content，大小为上面我们设置的300，400,其背景色为上面设置的#ccc;<br>二、创建Layer(即创建canvas)：<br>对于canvas的创建，在上面的基础上，其实相当简单，只需两句代码，即可实现：</p>
-<pre>
-&lt;script>
-var stage = new Kinetic.Stage({
-    width: 400,
-    height: 300,
-    container: "container"
+var layer = new Kinetic.Layer({
+     width: 400,
+     height: 400
 });
-var layer = new Kinetic.Layer();
+var rect = new Kinetic.Rect({
+     x: 50,
+     y: 50,
+     stroke: 'red',
+     width: 50,
+     height: 80,
+     strokeWidth: 4
+});
+var rect1 = new Kinetic.Rect({
+     x: 150.432,
+     y: 50.65464,
+     stroke: 'red',
+     width: 50,
+     height: 80,
+     strokeWidth: 4
+});
+var rect2 = new Kinetic.Rect({
+     x: 250,
+     y: 50,
+     stroke: 'red',
+     width: 50.543543,
+     height: 80.543534,
+     strokeWidth: 4
+});
+layer.add(rect);
+layer.add(rect1);
+layer.add(rect2);
 stage.add(layer);
-
-//创建另外一个canvas
-var layer1 = new kinetic.Layer();
-stage.add(layer1);
-&lt;/script>
 </pre>
 
-<p>随后，刷新页面，就可以看到有金色边框的canvas被成功创建，通过审查元素，可以看到，其被放置于上面创建的stage元素里面;如果需要创建多个canvas，只需要再new一个Layer对象，并通过add函数添加至stage中即可; 最后结果如图;</p>
-<p><img src="/img/stage-layer.jpg"><br></p>
+<p>由上面代码可以看出，前两个方框的创建最大的不同之处就是在x,y上面，尤其因为x,y的数值不是整数，而是小数，所以在展示的时候，会由于程序处理而造成图像的虚化反应，这个在使用过程中，非常重要，而且非常容易遇到。</p>
+<p>而且，需要注意的是，在使用过程中，不仅仅是<b>x,y</b>是小数时会造成虚化，其<b>width,height</b>如果是小数，也会造成虚化的结果，如上图第三个方框。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Kineticjs-html5/">Kineticjs html5</a>
+  <span></span> <a href="/tags/html5/">html5</a>
   </div>
 
 
@@ -167,7 +163,7 @@ stage.add(layer1);
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/07/02/kinetic-2/" data-title="stage及layer创建 | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2014/12/28/kinetic-fuzzy/" data-title="kinetic-fuzzy | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -176,19 +172,11 @@ stage.add(layer1);
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/11/03/Hexo/" title="Hexo的使用">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Hexo的使用</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/06/23/kinetic-1/"  title="kinetic 前言">
+<a href="/2014/12/03/linux1/"  title="linux目录及简单vim命令">
  <strong>NEXT:</strong><br/> 
- <span>kinetic 前言
+ <span>linux目录及简单vim命令
 </span>
 </a>
 </div>
