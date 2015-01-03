@@ -7,13 +7,18 @@
   <meta name="360-site-verification" content="67fbcc5a67f4c65c057315b28fa0b2c8" />
 <meta name="google-site-verification" content="2GzxQ0VtXwTSUdmGm6DzcmhTzM_I9QmzCb_pzpMzD88" />
   
-    <title>stage及layer创建 | payne blog</title>
+    <title>javascript循环异步 | payne blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="彭锋">
     
-    <meta name="description" content="kineticjs作为html5 canvas框架，首先，我们应该学会如何创建一个canvas，因为，只有学会如何创建一个canvas，才能进一步使用kinetic实现更复杂的功能。 
-一、创建stage：在kinetic中，stage对象是用于包裹canvas的节点，当需要创建canvas时，首先">
+    <meta name="description" content="js中，异步是非常重要的，以前模模糊糊知道一些情况及处理方法，但是，不是很清晰，今天，就稍微总结一下。
+首先，我们看这么情况下结果是什么呢？
+
+$(function() {
+    for(var i = 0; i 
+
+如果在上面中，我们需要打印出0,1,2,3,4呢，怎么才能实现呢，方法可能很多，">
     
     
     
@@ -76,15 +81,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2014/07/02/kinetic-2/" title="stage及layer创建" itemprop="url">stage及layer创建</a>
+      <a href="/2015/01/03/js-asynchronous-circulation/" title="javascript循环异步" itemprop="url">javascript循环异步</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://pf12345.github.io" title="彭锋">彭锋</a>
     </p>
   <p class="article-time">
-    <time datetime="2014-07-02T14:26:46.000Z" itemprop="datePublished">7月 2 2014</time>
-    更新日期:<time datetime="2014-11-23T14:39:44.000Z" itemprop="dateModified">11月 23 2014</time>
+    <time datetime="2015-01-03T12:03:41.000Z" itemprop="datePublished">1月 3 2015</time>
+    更新日期:<time datetime="2015-01-03T12:24:30.000Z" itemprop="dateModified">1月 3 2015</time>
     
   </p>
 </header>
@@ -96,78 +101,84 @@
 		
 		</div>
 		
-		<p>kineticjs作为html5 canvas框架，首先，我们应该学会如何创建一个canvas，因为，只有学会如何创建一个canvas，才能进一步使用kinetic实现更复杂的功能。 </p>
-<p>一、创建stage：<br>在kinetic中，stage对象是用于包裹canvas的节点，当需要创建canvas时，首先必须创建stage，再在stage中进行canvas的创建。<br>首先，在html的body中创建一个div元素，并给一个id值，在这儿，我们使用“id=container”，代码如下： </p>
+		<p>js中，异步是非常重要的，以前模模糊糊知道一些情况及处理方法，但是，不是很清晰，今天，就稍微总结一下。</p>
+<p>首先，我们看这么情况下结果是什么呢？</p>
 <pre>
-&lt;!DOCTYPE html>
-&lt;html>
-    &lt;head>
-        &lt;title>&lt;/title>
-        &lt;style>
-             #container > div {
-                 background: #ccc;
-             }
-             #container canvas {
-                 border: 1px solid gold !important;
-             }
-        &lt;/style>
-    &lt;/head>
-    &lt;body>
-        &lt;div id="container">&lt;/div>
-    &lt;/body>
-&lt;/html>                
+$(function() {
+    for(var i = 0; i < 5; i++) {
+        $.get("test.txt", {}, function(data){
+            console.log(i);
+        })
+    }
+})
+
+在这里，使用了ajax进行异步测试，在上面，最后执行结果是肯定是五个5无疑，这就是异步造成的；
 </pre>
 
-<p>然后，我们通过js创建stage,代码如下： </p>
+<p>如果在上面中，我们需要打印出0,1,2,3,4呢，怎么才能实现呢，方法可能很多，这里，有以下三种方法：</p>
+<p>1、定义函数</p>
 <pre>
-&lt;script>
-var stage = new Kinetic.Stage({
-     width: 400,
-     height: 300,
-     container: "container"
+$(function() {
+    var a = function(i) {
+        $.get("test.txt", {}, function(data){
+            console.log(i);
+        })
+    }
+    for(var i = 0; i < 5; i++) {
+        a(i);
+    }
+})
+</pre>
+
+<p>2、使用递归</p>
+<pre>
+$(function() {
+    var a = function(i) {
+        $.get("test.txt", {}, function(data){
+            if(i >= 5) {return;}
+            console.log(i);
+            a(i+1);
+        })
+    }
+    for(var i = 0; i < 5; i++) {
+        a(i);
+    }
 });
-&lt;/script>
 </pre>
 
-<p>这样，你就会看到在container下已经成功创建一个div，其class为kineticjs-content，大小为上面我们设置的300，400,其背景色为上面设置的#ccc;<br>二、创建Layer(即创建canvas)：<br>对于canvas的创建，在上面的基础上，其实相当简单，只需两句代码，即可实现：</p>
+<p>3、使用foreach</p>
 <pre>
-&lt;script>
-var stage = new Kinetic.Stage({
-    width: 400,
-    height: 300,
-    container: "container"
+$(function() {
+    var arr = [0,1,2,3,4];
+    arr.foreach(funtion(item,i){
+        $.get("test.txt", {}, function() {
+            console.log(i);
+        })
+    });
 });
-var layer = new Kinetic.Layer();
-stage.add(layer);
-
-//创建另外一个canvas
-var layer1 = new kinetic.Layer();
-stage.add(layer1);
-&lt;/script>
 </pre>
 
-<p>随后，刷新页面，就可以看到有金色边框的canvas被成功创建，通过审查元素，可以看到，其被放置于上面创建的stage元素里面;如果需要创建多个canvas，只需要再new一个Layer对象，并通过add函数添加至stage中即可; 最后结果如图;</p>
-<p><img src="/img/stage-layer.jpg"><br></p>
+<p>通过上面三种方式，可以得到想要的0,1,2,3,4的结果，可能方式不一样，但是都是通过传递参数进行相关实现的。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Kineticjs-html5/">Kineticjs html5</a>
+  <span></span> <a href="/tags/javascript/">javascript</a>
   </div>
 
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/HTML5/">HTML5</a>
+  <a class="article-category-link" href="/categories/javascript/">javascript</a>
 </div>
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://pf12345.github.io/2014/07/02/kinetic-2/" data-title="stage及layer创建 | payne blog" data-tsina="null" class="share clearfix">
+  <div data-url="http://pf12345.github.io/2015/01/03/js-asynchronous-circulation/" data-title="javascript循环异步 | payne blog" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -176,19 +187,11 @@ stage.add(layer1);
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2014/11/03/Hexo/" title="Hexo的使用">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Hexo的使用</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2014/06/23/kinetic-1/"  title="kinetic 前言">
+<a href="/2014/12/28/kinetic-fuzzy/"  title="kineticjs虚化现象">
  <strong>NEXT:</strong><br/> 
- <span>kinetic 前言
+ <span>kineticjs虚化现象
 </span>
 </a>
 </div>
